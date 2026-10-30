@@ -10,6 +10,15 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="atlas.css">
   <link rel="stylesheet" href="claude.css">
+  <script>
+    /* SINGLE_PAGE_REDIRECT: old lab URLs now open the unified workbench. */
+    (function () {
+      var hash = window.location.hash.replace(/^#/, '');
+      var map = {"bubble":"bubble","selection":"selection","insertion":"insertion","shell":"shell","merge":"merge","quick":"quick","heap":"heap-sort","counting":"counting"};
+      var id = map[hash] || "bubble";
+      window.location.replace('index.html#lab/' + id);
+    }());
+  </script>
 </head>
 <body class="lab-page sorting-lab">
   <div class="ambient" aria-hidden="true"></div>

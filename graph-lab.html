@@ -9,6 +9,15 @@
   <title>寻径 · 经典图算法可视化</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="claude.css">
+  <script>
+    /* SINGLE_PAGE_REDIRECT: old lab URLs now open the unified workbench. */
+    (function () {
+      var hash = window.location.hash.replace(/^#/, '');
+      var map = {"bfs":"bfs","dfs":"dfs","dijkstra":"dijkstra","prim":"prim","pagerank":"pagerank"};
+      var id = map[hash] || "bfs";
+      window.location.replace('index.html#lab/' + id);
+    }());
+  </script>
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>

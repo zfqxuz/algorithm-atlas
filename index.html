@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="寻径算法图谱：27 个交互算法实验室、122 个自动播放的计算机动态演示与 6 个研究生专题；覆盖优化、神经网络与 Transformer、操作系统、内存、网络拓扑、数据库、编译、分布式与安全。">
+  <meta name="description" content="寻径 · 计算机图谱：一个页面、一个工作台，146 个可交互实验。覆盖算法、数据结构、优化、机器学习、Transformer、操作系统、体系结构、网络、数据库、编译、分布式、安全、图形学与计算理论。">
   <meta name="theme-color" content="#f7f4ed">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <title>寻径 · 算法图谱 Algorithm Atlas</title>
+  <title>寻径 · 计算机图谱 Algorithm Atlas</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="atlas.css">
   <link rel="stylesheet" href="claude.css">
-  <link rel="stylesheet" href="visuals.css">
+  <link rel="stylesheet" href="app.css">
 </head>
 <body class="atlas-page">
   <div class="ambient" aria-hidden="true"></div>
 
   <div class="app-shell atlas-shell">
     <header class="topbar atlas-topbar">
-      <a class="brand" href="index.html" aria-label="寻径算法图谱首页">
+      <a class="brand" href="#atlas" aria-label="寻径计算机图谱首页">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 32 32" fill="none">
             <path d="M7.5 23.5 12.8 10.2l6.1 8.2L24.8 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -29,168 +29,30 @@
         </span>
         <span class="brand-copy">
           <span class="brand-name">寻径</span>
-          <span class="brand-sub">ALGORITHM ATLAS</span>
+          <span class="brand-sub">COMPUTER ATLAS</span>
         </span>
       </a>
 
       <div class="topbar-meta atlas-topbar-meta">
-        <a class="atlas-top-link" href="graph-lab.html">图算法实验台</a>
-        <a class="atlas-top-link" href="research.html">研究生专题</a>
-        <a class="atlas-top-link" href="#cs-atlas">计算机全景</a>
+        <a class="atlas-top-link" href="#atlas">实验目录</a>
+        <a class="atlas-top-link" href="#atlas">单页工作台</a>
         <span class="global-status" data-tone="idle">
           <span class="status-beacon" aria-hidden="true"></span>
-          <span id="atlasTopCount">载入中</span>
+          <span id="appStatus">载入实验目录</span>
         </span>
       </div>
     </header>
 
-    <main class="atlas-main">
-      <section class="atlas-hero" aria-labelledby="atlasTitle">
-        <div class="atlas-hero-copy">
-          <div class="eyebrow-line">
-            <span class="eyebrow">ALGORITHM ATLAS · 2026</span>
-            <span class="eyebrow-separator" aria-hidden="true"></span>
-            <span class="graph-meta">从基础到研究</span>
-          </div>
-          <h1 id="atlasTitle">把算法的<br><em>难度与脉络</em>摊开来看。</h1>
-          <p class="atlas-lede">
-            不只图算法。排序、数据结构、调度、字符串、几何与研究生专题，
-            用同一套可播放、可单步、可调测试数据的可视化实验室串起来。
-          </p>
-          <div class="atlas-hero-actions">
-            <a class="button atlas-primary-cta" href="#catalogue">
-              开始探索
-              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <path d="M4 10h11m-4.2-4.2L15 10l-4.2 4.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </a>
-            <a class="button button-quiet" href="sorting-lab.html">从排序开始</a>
-          </div>
-          <dl class="atlas-stats" id="atlasStats">
-            <div><dt>交互算法</dt><dd data-stat="algorithms">—</dd></div>
-            <div><dt>动态演示</dt><dd>122</dd></div>
-            <div><dt>难度层级</dt><dd data-stat="levels">—</dd></div>
-            <div><dt>研究生专题</dt><dd data-stat="topics">—</dd></div>
-          </dl>
-          <p class="atlas-data-note"><span class="data-pulse" aria-hidden="true"></span>每个实验室都提供独立的测试数据生成参数与随机种子。</p>
-        </div>
-
-        <aside class="level-ladder" aria-label="难度阶梯">
-          <div class="level-ladder-head">
-            <span class="eyebrow">DIFFICULTY LADDER</span>
-            <span>本科 → 博一</span>
-          </div>
-          <div class="level-ladder-list" id="levelLadder"></div>
-        </aside>
-      </section>
-
-      <section class="atlas-catalogue" id="catalogue" aria-labelledby="catalogueTitle">
-        <div class="atlas-catalogue-head">
-          <div>
-            <span class="eyebrow">CURRICULUM MAP</span>
-            <h2 id="catalogueTitle">按类型 × 难度浏览</h2>
-          </div>
-          <label class="atlas-search">
-            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <circle cx="8.7" cy="8.7" r="5.2" stroke="currentColor" stroke-width="1.4"/>
-              <path d="m12.7 12.7 3.8 3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-            </svg>
-            <input id="atlasSearch" type="search" placeholder="搜索算法、标签或英文名…" autocomplete="off">
-          </label>
-        </div>
-
-        <div class="atlas-filter-block">
-          <div class="atlas-filter-row">
-            <span class="atlas-filter-label">类型</span>
-            <div class="atlas-filter-chips" id="categoryFilters" role="group" aria-label="按类型筛选"></div>
-          </div>
-          <div class="atlas-filter-row">
-            <span class="atlas-filter-label">难度</span>
-            <div class="atlas-filter-chips" id="levelFilters" role="group" aria-label="按难度筛选"></div>
-          </div>
-          <div class="atlas-results-line">
-            <span id="atlasResultCount">正在载入算法图谱…</span>
-            <button class="atlas-clear-button" id="clearFilters" type="button" hidden>清除筛选</button>
-          </div>
-        </div>
-
-        <div class="atlas-catalog-sections" id="catalogSections"></div>
-        <div class="atlas-empty" id="atlasEmpty" hidden>
-          <span class="empty-glyph" aria-hidden="true">∅</span>
-          <h3>没有匹配的算法</h3>
-          <p>换一个关键词，或清除类型与难度筛选。</p>
-          <button class="button button-quiet" id="emptyReset" type="button">重置筛选</button>
-        </div>
-      </section>
-
-      <section class="atlas-research" id="research" aria-labelledby="researchTitle">
-        <div class="atlas-section-head">
-          <div>
-            <span class="eyebrow">RESEARCH LAYER · L4</span>
-            <h2 id="researchTitle">研究生专题</h2>
-            <p>不只是一道可视化题：这些是博一课程与研究中反复出现的思想框架。</p>
-          </div>
-          <div class="atlas-research-actions">
-            <span class="research-count" id="researchCount">—</span>
-            <a class="atlas-lab-link research-cta" href="research.html">打开完整专题 <span>↗</span></a>
-          </div>
-        </div>
-        <div class="research-grid" id="researchGrid"></div>
-      </section>
-
-      <section class="atlas-visual-band" id="cs-atlas" aria-labelledby="visualBandTitle">
-        <div class="atlas-visual-band-head">
-          <div>
-            <span class="eyebrow">COMPUTER SCIENCE FIELD GUIDE</span>
-            <h2 id="visualBandTitle">把整个计算机专业摊开来看。</h2>
-            <p>122 个会自动播放、可展开、可单步的动态演示：优化与运筹、机器学习、神经网络与 Transformer、操作系统、指令集与内存、网络拓扑、数据库、编译、分布式、安全、图形学与计算理论。</p>
-          </div>
-          <div class="atlas-visual-count"><strong>122</strong><span>DYNAMIC DEMOS</span></div>
-        </div>
-        <div class="atlas-visual-domains" aria-label="可视化领域">
-          <span>算法与数据结构</span><span>优化与运筹</span><span>机器学习</span><span>神经网络</span><span>Transformer</span><span>操作系统</span><span>体系结构</span><span>网络拓扑</span><span>数据库</span><span>编译原理</span><span>分布式</span><span>安全</span><span>图形学</span><span>计算理论</span>
-        </div>
-        <div class="atlas-visual-band-actions">
-          <a class="atlas-primary-cta" href="#csAtlasApp">浏览 122 个动态演示 <span>→</span></a>
-          <span>14 个领域 · L1–L4 · 全部原生 SVG</span>
-        </div>
-        <div class="atlas-visual-band-labs">
-          <span>直接进入新实验台</span>
-          <a href="optimization-lab.html">优化</a>
-          <a href="transformer-lab.html">Transformer</a>
-          <a href="memory-lab.html">内存</a>
-        </div>
-      </section>
-
-      <div id="csAtlasApp" class="cs-atlas-app"></div>
-
-      <section class="atlas-closing">
-        <div>
-          <span class="eyebrow">HOW TO USE</span>
-          <h2>先建立直觉，再写证明。</h2>
-          <p>选择一个实验室，调整数据分布、规模与随机种子；用播放、单步和状态面板观察不变量如何被维护。</p>
-        </div>
-        <div class="atlas-closing-links">
-          <a href="sorting-lab.html"><span>01</span>排序与选择</a>
-          <a href="graph-lab.html"><span>02</span>图与网络</a>
-          <a href="structures-lab.html"><span>03</span>数据结构</a>
-          <a href="scheduling-lab.html"><span>04</span>调度与资源</a>
-          <a href="advanced-lab.html"><span>05</span>进阶算法</a>
-          <a href="research.html"><span>06</span>研究生专题</a>
-        </div>
-      </section>
-    </main>
+    <main id="app" class="ab-main" aria-live="polite"></main>
 
     <footer class="page-footer atlas-footer">
-      <span>ALGORITHM ATLAS / INTERACTIVE LAB</span>
+      <span>ALGORITHM ATLAS / SINGLE-PAGE LAB</span>
       <span class="footer-dot" aria-hidden="true"></span>
-      <span>本科基础 → 研究生专题 · 数据可调 · 离线可用</span>
-      <span class="atlas-footer-note">所有动画与算法均在浏览器本地运行</span>
+      <span>146 个可交互实验 · 一套工作台 · 浏览器本地运行</span>
+      <span class="atlas-footer-note">无后端 · 可深链 · 可离线部署</span>
     </footer>
   </div>
 
-  <script src="catalog.js"></script>
-  <script src="atlas.js"></script>
-  <script type="module" src="/src/visuals/main.ts"></script>
+  <script type="module" src="/src/app/main.ts"></script>
 </body>
 </html>

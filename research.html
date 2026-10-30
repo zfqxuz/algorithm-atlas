@@ -10,6 +10,15 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="atlas.css">
   <link rel="stylesheet" href="claude.css">
+  <script>
+    /* SINGLE_PAGE_REDIRECT: one atlas page is the only entry. */
+    (function () {
+      var hash = window.location.hash.replace(/^#/, '');
+      var target = "index.html#atlas";
+      if (target === 'index.html#atlas' && hash) target = 'index.html#lab/' + hash;
+      window.location.replace(target);
+    }());
+  </script>
 </head>
 <body class="lab-page research-page">
   <div class="ambient" aria-hidden="true"></div>

@@ -4,16 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
-  <title>计算机全景 · 寻径算法图谱</title>
+  <title>寻径 · 计算机图谱</title>
   <script>
+    /* SINGLE_PAGE_REDIRECT: the field guide now lives in the one workbench. */
     (function () {
-      var hash = window.location.hash || '#cs-atlas';
-      window.location.replace('index.html' + hash);
+      var hash = window.location.hash.replace(/^#/, '');
+      var target = hash && hash !== 'cs-atlas' ? 'index.html#lab/' + encodeURIComponent(hash) : 'index.html#atlas';
+      window.location.replace(target);
     }());
   </script>
-  <meta http-equiv="refresh" content="0; url=index.html#cs-atlas">
 </head>
 <body>
-  <p>计算机全景已整合进 <a href="index.html#cs-atlas">算法图谱首页</a>。</p>
+  <p>计算机全景已整合进 <a href="index.html#atlas">算法图谱首页</a>。</p>
 </body>
 </html>

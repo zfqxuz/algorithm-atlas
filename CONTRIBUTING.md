@@ -9,7 +9,7 @@ pnpm install
 pnpm dev
 ```
 
-The production build is multi-page Vite output:
+The production build is a static Vite output. Everything runs in the browser; there is no API server.
 
 ```bash
 pnpm run typecheck
@@ -18,18 +18,27 @@ pnpm run build
 pnpm run preview
 ```
 
-## Adding a visual note
+## The one-page rule
 
-1. Add an `Entry` to `src/visuals/data/` using one of the typed visual specs.
-2. Pick an existing renderer (`bars`, `matrix`, `chart`, `graph`, `tree`, `pipeline`, `layers`, `timeline`, `memory`, `table`, `stack`, `vector`, `topology`) or extend `src/visuals/render.ts`.
-3. Keep `id` unique, use a level `L1`–`L4`, and make `mechanism` / `observe` explain what the learner should look at.
-4. Run `pnpm test` and `pnpm run build`.
+- `index.html` is the only entry point.
+- A lab is selected inside the same page and deep-linked as `#lab/<id>`.
+- Do not add a second field-guide page, a modal-only demo, or a separate lab HTML page. Old lab URLs should redirect.
+- The catalogue is an index, not a gallery of autoplaying thumbnails.
 
-## Adding an interactive lab
+## Adding an experiment
 
-- Put pure logic in `src/labs/` (or a core module) and DOM wiring in a page entry.
-- Keep the page accessible: labels, visible focus, keyboard controls, reduced-motion-safe animation.
-- Add a screenshot and link it from the embedded `#cs-atlas` section and `README.md`; do not create a separate field-guide page.
+1. Add the metadata to `src/app/legacy.ts` (original lab) or `src/visuals/data/` (field-guide entry).
+2. Map it to one of the existing `LabKind` stage adapters in `src/app/catalog.ts`.
+3. Add or extend a trace generator in `src/app/engines.ts`.
+4. Add the stage renderer only if the existing 13 stage types cannot express the state; extend `src/app/stage.ts` and `src/app/model.ts` together.
+5. Make the experiment satisfy the contract in `tests/labs.test.ts`:
+   - at least one parameter;
+   - pseudocode and an invariant;
+   - at least five meaningful frames;
+   - narration and at least one metric per frame;
+   - a valid active code line;
+   - a changed stage and a completion flag.
+6. Run `pnpm test`, `pnpm run typecheck`, and `pnpm run build`.
 
 ## Pull requests
 

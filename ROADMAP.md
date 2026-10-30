@@ -2,26 +2,27 @@
 
 ## Now
 
-- Static-first Vite + TypeScript build with legacy classic pages progressively migrated.
-- 27 interactive algorithm labs, 122 visual field-guide notes, 6 graduate-topic articles.
-- Optimization, Transformer, and page-replacement labs.
-- Node tests + Vitest data tests + CDP browser checks.
-- GitHub Actions CI and GitHub Pages build.
+- One `index.html` with a single workbench for 146 unique experiments.
+- 122 field-guide topics + 24 original labs; duplicate BFS/DFS/union-find entries merged.
+- 13 native SVG/DOM stage types: array, graph, tree, matrix, chart, timeline, frames, table, stack, vector, layers, pipeline, topology.
+- Every lab has parameters, a seeded generator, playback/step/back/reset, metrics, pseudocode, an invariant, a step log, and a deep link.
+- 101 Node engine tests + 5 Vitest lab-contract tests.
+- GitHub Actions CI and GitHub Pages deployment.
 
 ## Next
 
-- Move the remaining classic labs onto shared TypeScript modules.
+- Deepen the domain adapters where the field-guide topic needs more than the shared stage: cache mapping, consensus, RSA/DH, image rasterization.
 - Add browser smoke tests to CI with Playwright.
-- Add a dedicated network-topology lab (topology editing + link-state animation).
-- Add search indexing / command palette across labs and visual notes.
-- Add small, deterministic quiz mode for the visual notes.
-- Improve print/export of a topic article or visual card as a one-page PDF.
+- Add a command palette and URL-shareable parameter snapshots.
+- Add deterministic quiz/checkpoint mode inside the same workbench.
+- Improve keyboard focus and screen-reader narration for the graph/tree stages.
+- Add print/export of the current lab (parameters + final state) as a one-page PDF.
 
 ## Later — only if the product needs it
 
 - Accounts and cross-device progress.
 - Saved notes, collections, and classroom groups.
-- AI-assisted explanations grounded in the same visual data.
+- AI-assisted explanations grounded in the same state trace.
 - A thin API service with Postgres/SQLite and OAuth.
 - Content administration for teachers.
 

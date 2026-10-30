@@ -1,8 +1,8 @@
 {
   "name": "algorithm-atlas-visualizer",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "private": true,
-  "description": "寻径·算法图谱：从本科基础到研究生难度的计算机可视化学习站",
+  "description": "寻径·计算机图谱：146 个可交互实验的单页工作台（Vite + TypeScript）",
   "license": "MIT",
   "repository": {
     "type": "git",

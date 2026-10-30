@@ -10,6 +10,15 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="atlas.css">
   <link rel="stylesheet" href="claude.css">
+  <script>
+    /* SINGLE_PAGE_REDIRECT: old lab URLs now open the unified workbench. */
+    (function () {
+      var hash = window.location.hash.replace(/^#/, '');
+      var map = {"lcs":"lcs","kmp":"kmp","hull":"hull"};
+      var id = map[hash] || "lcs";
+      window.location.replace('index.html#lab/' + id);
+    }());
+  </script>
 </head>
 <body class="lab-page advanced-lab">
   <div class="ambient" aria-hidden="true"></div>

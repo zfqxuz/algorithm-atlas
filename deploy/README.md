@@ -38,21 +38,20 @@ sudo ufw allow 9000/tcp comment 'algorithm atlas'
 ├── docker-compose.yml
 ├── nginx.conf
 └── site/
-    ├── index.html
-    ├── visuals.html            # 兼容重定向到 index.html#cs-atlas
-    ├── optimization-lab.html
-    ├── transformer-lab.html
-    ├── memory-lab.html
-    ├── graph-lab.html
-    ├── sorting-lab.html
-    ├── structures-lab.html
-    ├── scheduling-lab.html
-    ├── advanced-lab.html
-    ├── research.html
-    ├── dijkstra-visualizer.html
+    ├── index.html              # 唯一入口：图谱 + 工作台
+    ├── visuals.html            # 兼容重定向到 index.html#lab/<id>
+    ├── sorting-lab.html        # 兼容重定向
+    ├── graph-lab.html          # 兼容重定向
+    ├── structures-lab.html     # 兼容重定向
+    ├── scheduling-lab.html     # 兼容重定向
+    ├── advanced-lab.html       # 兼容重定向
+    ├── optimization-lab.html   # 兼容重定向
+    ├── transformer-lab.html    # 兼容重定向
+    ├── memory-lab.html         # 兼容重定向
+    ├── research.html           # 兼容重定向
+    ├── dijkstra-visualizer.html# 兼容重定向
     ├── favicon.svg
     ├── assets/                 # Vite 生成的 CSS/JS（含 hash）
-    ├── engines/                # 兼容旧页面的经典脚本
     └── ...
 ```
 
