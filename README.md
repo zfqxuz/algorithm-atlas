@@ -1,191 +1,143 @@
-# 寻径 · 算法图谱 Algorithm Atlas
+# 瀵诲緞 路 绠楁硶鍥捐氨 Algorithm Atlas
 
-从本科基础到博一难度的交互式计算机学习站：**27 个算法实验室、122 个可视化样例、6 个研究生专题**，以及优化 / Transformer / 内存三个新的交互实验台。项目采用 **Vite + TypeScript + 原生 SVG**，无图表库、无运行时后端依赖。
+浠庢湰绉戝熀纭€鍒板崥涓€闅惧害鐨勪氦浜掑紡璁＄畻鏈哄涔犵珯锛?*27 涓畻娉曞疄楠屽銆?22 涓彲瑙嗗寲鏍蜂緥銆? 涓爺绌剁敓涓撻**锛屼互鍙婁紭鍖?/ Transformer / 鍐呭瓨涓変釜鏂扮殑浜や簰瀹為獙鍙般€傞」鐩噰鐢?**Vite + TypeScript + 鍘熺敓 SVG**锛屾棤鍥捐〃搴撱€佹棤杩愯鏃跺悗绔緷璧栥€?
+![璁＄畻鏈哄彲瑙嗗寲鐧剧](screenshots/visuals.png)
 
-![计算机可视化百科](screenshots/visuals.png)
+[![CI](https://github.com/zfqxuz/algorithm-atlas/actions/workflows/ci.yml/badge.svg)](https://github.com/zfqxuz/algorithm-atlas/actions/workflows/ci.yml)
 
-**在线访问：<http://154.222.16.237:9000/>**
+**鍦ㄧ嚎璁块棶锛?http://154.222.16.237:9000/>**
 
-**GitHub：<https://github.com/zfqxuz/algorithm-atlas>**
+**GitHub Pages锛?https://zfqxuz.github.io/algorithm-atlas/>**
 
-静态站点运行在非 root、只读根文件系统的 Nginx 容器中，仅通过 `personal-net` 暴露 9000 端口。部署与运维见 [`deploy/README.md`](deploy/README.md)。
+**GitHub 浠撳簱锛?https://github.com/zfqxuz/algorithm-atlas>**
 
-> 若本机系统代理会拦截非标准端口，请把 `154.222.16.237` 加入代理绕过列表，或暂时关闭代理。
+闈欐€佺珯鐐硅繍琛屽湪闈?root銆佸彧璇绘牴鏂囦欢绯荤粺鐨?Nginx 瀹瑰櫒涓紝浠呴€氳繃 `personal-net` 鏆撮湶 9000 绔彛銆傞儴缃蹭笌杩愮淮瑙?[`deploy/README.md`](deploy/README.md)銆?
+> 鑻ユ湰鏈虹郴缁熶唬鐞嗕細鎷︽埅闈炴爣鍑嗙鍙ｏ紝璇锋妸 `154.222.16.237` 鍔犲叆浠ｇ悊缁曡繃鍒楄〃锛屾垨鏆傛椂鍏抽棴浠ｇ悊銆?
+鏇村棰勮锛歔浼樺寲瀹為獙鍙癩(screenshots/optimization-lab.png) 路 [Transformer 瀹為獙鍙癩(screenshots/transformer-lab.png) 路 [鍐呭瓨瀹為獙鍙癩(screenshots/memory-lab.png) 路 [鍙鍖栫櫨绉慮(screenshots/visuals.png) 路 [绉诲姩绔洰褰昡(screenshots/visuals-mobile.png) 路 [鎵嬫満绔睍寮€](screenshots/gallery-modal-mobile.png) 路 [鎺掑簭瀹為獙瀹(screenshots/sorting-lab.png) 路 [绾㈤粦鏍慮(screenshots/structures-rb.png) 路 [璋冨害瀹為獙瀹(screenshots/scheduling-lab.png) 路 [LCS 鍔ㄦ€佽鍒抅(screenshots/advanced-lcs.png) 路 [鍥剧畻娉曞疄楠屽彴](screenshots/graph-lab.png) 路 [鐢熸垚鍥惧弬鏁伴潰鏉縘(screenshots/graph-modal-mobile.png) 路 [鐮旂┒鐢熶笓棰榏(screenshots/research-top.png) 路 [鏈€澶ф祦浜や簰](screenshots/research-flow.png)
 
-更多预览：[优化实验台](screenshots/optimization-lab.png) · [Transformer 实验台](screenshots/transformer-lab.png) · [内存实验台](screenshots/memory-lab.png) · [可视化百科](screenshots/visuals.png) · [移动端目录](screenshots/visuals-mobile.png) · [手机端展开](screenshots/gallery-modal-mobile.png) · [排序实验室](screenshots/sorting-lab.png) · [红黑树](screenshots/structures-rb.png) · [调度实验室](screenshots/scheduling-lab.png) · [LCS 动态规划](screenshots/advanced-lcs.png) · [图算法实验台](screenshots/graph-lab.png) · [生成图参数面板](screenshots/graph-modal-mobile.png) · [研究生专题](screenshots/research-top.png) · [最大流交互](screenshots/research-flow.png)
+## 涓€寮犲浘璋憋紝浜斾釜缁忓吀瀹為獙瀹?+ 涓変釜鏂板疄楠屽彴 + 涓€涓笓棰樺眰
 
-## 一张图谱，五个经典实验室 + 三个新实验台 + 一个专题层
-
-| 类型 | 页面 | 内容 | 难度 |
+| 绫诲瀷 | 椤甸潰 | 鍐呭 | 闅惧害 |
 | --- | --- | --- | --- |
-| 排序与选择 | [`sorting-lab.html`](sorting-lab.html) | 冒泡、选择、插入、希尔、归并、快速、堆排序、计数排序 | L1–L3 |
-| 图与网络 | [`graph-lab.html`](graph-lab.html) | BFS、DFS、Dijkstra、Prim；PageRank 在进阶实验室 | L1–L4 |
-| 数据结构 | [`structures-lab.html`](structures-lab.html) | BST、二叉堆、并查集、AVL、红黑树 | L1–L3 |
-| 调度与资源分配 | [`scheduling-lab.html`](scheduling-lab.html) | FCFS、SJF、优先级、时间片轮转、EDF、多机 LPT | L1–L4 |
-| 算法范式与进阶 | [`advanced-lab.html`](advanced-lab.html) | LCS、KMP、Andrew 凸包、PageRank | L2–L4 |
-| 优化实验台 | [`optimization-lab.html`](optimization-lab.html) | GD、Momentum、RMSProp、Adam；二维损失地形与轨迹 | L2–L3 |
-| Transformer 实验台 | [`transformer-lab.html`](transformer-lab.html) | 真实 Q/K/V、多头注意力、因果掩码、行统计 | L3–L4 |
-| 内存实验台 | [`memory-lab.html`](memory-lab.html) | FIFO / LRU / OPT 页面置换、命中率与帧状态 | L2 |
-| 可视化百科 | [`visuals.html`](visuals.html) | 122 个跨 14 个领域的视觉笔记，领域/难度/关键词检索 | L1–L4 |
-| 研究生专题 | [`research.html`](research.html) | 最大流/最小割、LP、NP 完全性、近似、随机、在线；含最大流交互 | L4 |
+| 鎺掑簭涓庨€夋嫨 | [`sorting-lab.html`](sorting-lab.html) | 鍐掓场銆侀€夋嫨銆佹彃鍏ャ€佸笇灏斻€佸綊骞躲€佸揩閫熴€佸爢鎺掑簭銆佽鏁版帓搴?| L1鈥揕3 |
+| 鍥句笌缃戠粶 | [`graph-lab.html`](graph-lab.html) | BFS銆丏FS銆丏ijkstra銆丳rim锛汸ageRank 鍦ㄨ繘闃跺疄楠屽 | L1鈥揕4 |
+| 鏁版嵁缁撴瀯 | [`structures-lab.html`](structures-lab.html) | BST銆佷簩鍙夊爢銆佸苟鏌ラ泦銆丄VL銆佺孩榛戞爲 | L1鈥揕3 |
+| 璋冨害涓庤祫婧愬垎閰?| [`scheduling-lab.html`](scheduling-lab.html) | FCFS銆丼JF銆佷紭鍏堢骇銆佹椂闂寸墖杞浆銆丒DF銆佸鏈?LPT | L1鈥揕4 |
+| 绠楁硶鑼冨紡涓庤繘闃?| [`advanced-lab.html`](advanced-lab.html) | LCS銆並MP銆丄ndrew 鍑稿寘銆丳ageRank | L2鈥揕4 |
+| 浼樺寲瀹為獙鍙?| [`optimization-lab.html`](optimization-lab.html) | GD銆丮omentum銆丷MSProp銆丄dam锛涗簩缁存崯澶卞湴褰笌杞ㄨ抗 | L2鈥揕3 |
+| Transformer 瀹為獙鍙?| [`transformer-lab.html`](transformer-lab.html) | 鐪熷疄 Q/K/V銆佸澶存敞鎰忓姏銆佸洜鏋滄帺鐮併€佽缁熻 | L3鈥揕4 |
+| 鍐呭瓨瀹為獙鍙?| [`memory-lab.html`](memory-lab.html) | FIFO / LRU / OPT 椤甸潰缃崲銆佸懡涓巼涓庡抚鐘舵€?| L2 |
+| 鍙鍖栫櫨绉?| [`visuals.html`](visuals.html) | 122 涓法 14 涓鍩熺殑瑙嗚绗旇锛岄鍩?闅惧害/鍏抽敭璇嶆绱?| L1鈥揕4 |
+| 鐮旂┒鐢熶笓棰?| [`research.html`](research.html) | 鏈€澶ф祦/鏈€灏忓壊銆丩P銆丯P 瀹屽叏鎬с€佽繎浼笺€侀殢鏈恒€佸湪绾匡紱鍚渶澶ф祦浜や簰 | L4 |
 
-## 122 个可视化样例
+## 122 涓彲瑙嗗寲鏍蜂緥
 
-[`visuals.html`](visuals.html) 用 14 个领域覆盖计算机专业从本科到研究生的概念地图：
+[`visuals.html`](visuals.html) 鐢?14 涓鍩熻鐩栬绠楁満涓撲笟浠庢湰绉戝埌鐮旂┒鐢熺殑姒傚康鍦板浘锛?
+- **绠楁硶涓庢暟鎹粨鏋?*锛氫簩鍒嗐€佸搱甯屻€丅FS/DFS銆佹嫇鎵戙€佸苟鏌ラ泦銆乀rie銆佺嚎娈垫爲銆佹爲鐘舵暟缁勩€佸崟璋冩爤銆佹粦鍔ㄧ獥鍙ｃ€丩RU銆佸竷闅嗚繃婊ゅ櫒銆佽烦琛?- **浼樺寲涓庤繍绛?*锛氭搴︿笅闄嶃€丼GD銆佸姩閲忋€丄dam銆佺墰椤挎硶銆佹ā鎷熼€€鐏€侀仐浼犵畻娉曘€佺矑瀛愮兢銆佺嚎鎬ц鍒掋€佸垎鏀畾鐣?- **鏈哄櫒瀛︿範**锛氱嚎鎬?閫昏緫鍥炲綊銆乲NN銆佸喅绛栨爲銆侀殢鏈烘．鏋椼€丟BDT銆丼VM銆並-Means銆丳CA
+- **绁炵粡缃戠粶涓?Transformer**锛氭劅鐭ユ満銆丮LP銆佸弽鍚戜紶鎾€丆NN銆丷esNet銆丷NN銆丩STM銆佽嚜缂栫爜鍣ㄣ€丟AN銆佹墿鏁ｃ€佹敞鎰忓姏銆佸澶淬€佷綅缃紪鐮併€乀ransformer 鍧椼€丅ERT銆丟PT
+- **鎿嶄綔绯荤粺**锛氳繘绋嬬姸鎬併€佷笂涓嬫枃鍒囨崲銆佺郴缁熻皟鐢ㄣ€佸垎椤点€乀LB銆侀〉闈㈢疆鎹€乮node銆佺鐩樿皟搴︺€佹閿併€佷俊鍙烽噺
+- **浣撶郴缁撴瀯涓庢寚浠ら泦**锛欳ISC/RISC銆佹祦姘寸嚎銆佸啋闄┿€佸垎鏀娴嬨€佺紦瀛樺眰娆°€佺粍鐩歌仈銆丮ESI銆丼IMD銆佽皟鐢ㄧ害瀹?- **缃戠粶涓庢嫇鎵?*锛歄SI銆佹槦鍨?鐜瀷/Fat-Tree銆侀摼璺姸鎬併€佽窛绂诲悜閲忋€乀CP 鎻℃墜/鎷ュ銆佹粦鍔ㄧ獥鍙ｃ€丆SMA/CD銆丯AT/瀛愮綉
+- **鏁版嵁搴撱€佺紪璇戙€佸垎甯冨紡銆佸畨鍏ㄣ€佸浘褰㈠銆佽绠楃悊璁恒€佽蒋浠跺伐绋?*锛欱+ 鏍戙€佽繛鎺ャ€?PL銆丮VCC銆丩SM銆丏FA銆丄ST銆丼SA銆丟C銆丆AP銆丷aft銆丳axos銆佷竴鑷存€у搱甯屻€丮apReduce銆丄ES銆丷SA銆丏H銆丮erkle銆乀LS/PKI銆乑KP銆丅resenham銆佸厜鏍呭寲銆丅ezier銆佸厜绾胯拷韪€佸浘鐏垫満銆佸仠鏈洪棶棰樸€丟it DAG銆丆I/CD 绛?
+姣忎釜鏍蜂緥閮芥湁鐙珛鐨勫皬鍥俱€佹満鍒惰鏄庛€佽瀵熺偣銆佹爣绛句笌寤朵几閾炬帴锛涘崱鐗囧彲灞曞紑涓哄ぇ鍥惧拰瀹屾暣瑙ｉ噴锛屾敮鎸佹繁閾?`#entry-id`銆佷笂涓€寮?涓嬩竴寮犱笌澶嶅埗閾炬帴銆?
+闅惧害灞傜骇锛?
+- **L1 鏈鍩虹**锛氬叆闂ㄦ暟鎹粨鏋勩€佹瘮杈冩帓搴忋€侀亶鍘嗐€丗CFS/SJF銆?- **L2 鏈杩涢樁**锛氬垎娌汇€佸爢銆佸钩琛℃爲銆佹渶鐭矾銆丷R銆丩CS銆?- **L3 楂橀樁 / 鐮旂┒鐢熷叆闂?*锛氱孩榛戞爲銆佽鏁版帓搴忋€丒DF銆並MP銆佽绠楀嚑浣曘€?- **L4 鐮旂┒鐢?/ 鍗氫竴**锛歅ageRank銆佸鏈?LPT 杩戜技锛屼互鍙婃渶澶ф祦銆丩P銆丯P-瀹屽叏鎬с€佽繎浼?闅忔満/鍦ㄧ嚎绠楁硶绛夌爺绌剁敓涓撻銆?
+棣栭〉 [`index.html`](index.html) 浼氭寜銆岀被鍨?脳 闅惧害銆嶅垎缁勫睍绀哄叏閮ㄧ畻娉曪紝鏀寔鎸夌被鍨嬨€侀毦搴︾瓫閫夊拰鍏抽敭璇嶆悳绱€? 涓爺绌剁敓涓撻鏃㈡湁棣栭〉姒傚康鍗★紝涔熸湁 [`research.html`](research.html) 鐨勫畬鏁撮暱鏂囷細妯″瀷銆佸畾鐞嗐€佽瘉鏄庣洿瑙夈€佽嚜娴嬮銆侀槄璇绘潗鏂欍€佸父瑙佽鍖轰笌鍏抽敭鐣岄€熸煡琛ㄣ€?
+## 鏁版嵁鐢熸垚鍙傛暟
 
-- **算法与数据结构**：二分、哈希、BFS/DFS、拓扑、并查集、Trie、线段树、树状数组、单调栈、滑动窗口、LRU、布隆过滤器、跳表
-- **优化与运筹**：梯度下降、SGD、动量、Adam、牛顿法、模拟退火、遗传算法、粒子群、线性规划、分支定界
-- **机器学习**：线性/逻辑回归、kNN、决策树、随机森林、GBDT、SVM、K-Means、PCA
-- **神经网络与 Transformer**：感知机、MLP、反向传播、CNN、ResNet、RNN、LSTM、自编码器、GAN、扩散、注意力、多头、位置编码、Transformer 块、BERT、GPT
-- **操作系统**：进程状态、上下文切换、系统调用、分页、TLB、页面置换、inode、磁盘调度、死锁、信号量
-- **体系结构与指令集**：CISC/RISC、流水线、冒险、分支预测、缓存层次、组相联、MESI、SIMD、调用约定
-- **网络与拓扑**：OSI、星型/环型/Fat-Tree、链路状态、距离向量、TCP 握手/拥塞、滑动窗口、CSMA/CD、NAT/子网
-- **数据库、编译、分布式、安全、图形学、计算理论、软件工程**：B+ 树、连接、2PL、MVCC、LSM、DFA、AST、SSA、GC、CAP、Raft、Paxos、一致性哈希、MapReduce、AES、RSA、DH、Merkle、TLS/PKI、ZKP、Bresenham、光栅化、Bezier、光线追踪、图灵机、停机问题、Git DAG、CI/CD 等
+姣忎釜瀹為獙瀹ら兘鏈夌嫭绔嬬殑娴嬭瘯鏁版嵁闈㈡澘锛涘弬鏁版敼鍙樺悗鍙互閲嶆柊鐢熸垚骞堕噸鏀撅細
 
-每个样例都有独立的小图、机制说明、观察点、标签与延伸链接；卡片可展开为大图和完整解释，支持深链 `#entry-id`、上一张/下一张与复制链接。
-
-难度层级：
-
-- **L1 本科基础**：入门数据结构、比较排序、遍历、FCFS/SJF。
-- **L2 本科进阶**：分治、堆、平衡树、最短路、RR、LCS。
-- **L3 高阶 / 研究生入门**：红黑树、计数排序、EDF、KMP、计算几何。
-- **L4 研究生 / 博一**：PageRank、多机 LPT 近似，以及最大流、LP、NP-完全性、近似/随机/在线算法等研究生专题。
-
-首页 [`index.html`](index.html) 会按「类型 × 难度」分组展示全部算法，支持按类型、难度筛选和关键词搜索。6 个研究生专题既有首页概念卡，也有 [`research.html`](research.html) 的完整长文：模型、定理、证明直觉、自测题、阅读材料、常见误区与关键界速查表。
-
-## 数据生成参数
-
-每个实验室都有独立的测试数据面板；参数改变后可以重新生成并重放：
-
-| 实验室 | 可调参数 |
+| 瀹為獙瀹?| 鍙皟鍙傛暟 |
 | --- | --- |
-| 排序 | 数组规模 8–64、随机/近乎有序/逆序/少重复/锯齿分布、值域上限、随机种子 |
-| 图 | 节点数 6–10、稀疏/适中/密集边密度、权重上限 9/20、随机种子；也可在 3 张手工图上切换 |
-| 数据结构 | 初始节点数、键值上下限、随机种子；堆支持值域；并查集支持元素数与初始合并次数 |
-| 调度 | 作业数、到达窗口、执行时间范围、截止期松弛范围、优先级档位、时间片、机器数、随机种子 |
-| 进阶 | 序列长度/字母表、文本与模式长度/植入匹配、点集数量/范围/形状、图节点数/边概率/阻尼/迭代阈值 |
-| 优化 | 损失函数（椭圆碗/Rosenbrock/各向异性）、优化器、学习率、起点（点击地形重设） |
-| Transformer | 注意力头 1–3、因果掩码开关、查询 token 左右切换 |
-| 内存 | FIFO/LRU/OPT、帧数 2–6、引用串长度、随机种子 |
+| 鎺掑簭 | 鏁扮粍瑙勬ā 8鈥?4銆侀殢鏈?杩戜箮鏈夊簭/閫嗗簭/灏戦噸澶?閿娇鍒嗗竷銆佸€煎煙涓婇檺銆侀殢鏈虹瀛?|
+| 鍥?| 鑺傜偣鏁?6鈥?0銆佺█鐤?閫備腑/瀵嗛泦杈瑰瘑搴︺€佹潈閲嶄笂闄?9/20銆侀殢鏈虹瀛愶紱涔熷彲鍦?3 寮犳墜宸ュ浘涓婂垏鎹?|
+| 鏁版嵁缁撴瀯 | 鍒濆鑺傜偣鏁般€侀敭鍊间笂涓嬮檺銆侀殢鏈虹瀛愶紱鍫嗘敮鎸佸€煎煙锛涘苟鏌ラ泦鏀寔鍏冪礌鏁颁笌鍒濆鍚堝苟娆℃暟 |
+| 璋冨害 | 浣滀笟鏁般€佸埌杈剧獥鍙ｃ€佹墽琛屾椂闂磋寖鍥淬€佹埅姝㈡湡鏉惧紱鑼冨洿銆佷紭鍏堢骇妗ｄ綅銆佹椂闂寸墖銆佹満鍣ㄦ暟銆侀殢鏈虹瀛?|
+| 杩涢樁 | 搴忓垪闀垮害/瀛楁瘝琛ㄣ€佹枃鏈笌妯″紡闀垮害/妞嶅叆鍖归厤銆佺偣闆嗘暟閲?鑼冨洿/褰㈢姸銆佸浘鑺傜偣鏁?杈规鐜?闃诲凹/杩唬闃堝€?|
+| 浼樺寲 | 鎹熷け鍑芥暟锛堟き鍦嗙/Rosenbrock/鍚勫悜寮傛€э級銆佷紭鍖栧櫒銆佸涔犵巼銆佽捣鐐癸紙鐐瑰嚮鍦板舰閲嶈锛?|
+| Transformer | 娉ㄦ剰鍔涘ご 1鈥?銆佸洜鏋滄帺鐮佸紑鍏炽€佹煡璇?token 宸﹀彸鍒囨崲 |
+| 鍐呭瓨 | FIFO/LRU/OPT銆佸抚鏁?2鈥?銆佸紩鐢ㄤ覆闀垮害銆侀殢鏈虹瀛?|
 
-生成器均使用带种子的 PRNG（或引擎内的确定性构造），因此同一组参数可以得到可复现的实验数据。
+鐢熸垚鍣ㄥ潎浣跨敤甯︾瀛愮殑 PRNG锛堟垨寮曟搸鍐呯殑纭畾鎬ф瀯閫狅級锛屽洜姝ゅ悓涓€缁勫弬鏁板彲浠ュ緱鍒板彲澶嶇幇鐨勫疄楠屾暟鎹€?
+## 浜や簰鑳藉姏
 
-## 交互能力
-
-- **播放 / 暂停 / 单步 / 重置**；排序、数据结构与进阶实验室支持速度倍率。
-- **逐帧状态可视化**：柱状数组、SVG 树、堆与森林、甘特图、DP 表、字符串对齐、散点凸包、有向图排名。
-- **算法骨架与当前行高亮**：每个实验室都有伪代码、核心不变量与复杂度说明；长代码块内部滚动并自动跟随当前行。
-- **参数化实验**：支持观察同一算法在不同数据分布、规模、密度、截止期压力、阻尼系数下的行为差异。
-- **响应式与键盘操作**：`Space` 播放/暂停、`→` 单步；窄屏保留水平滚动容器而不是压缩图表。
-- **最大流小实验**：在研究生专题中逐步增广，观察残量路径、瓶颈容量、累计流量与最终最小割。
-- **优化轨迹**：在二维损失地形上播放/单步，比较 GD、Momentum、RMSProp、Adam 的下降路径。
-- **注意力矩阵**：真实 Q/K/V 计算、多头切换、因果掩码与行和/熵/输出范数。
-- **页面置换**：逐次引用观察帧状态、命中/缺页与淘汰决策，比较 FIFO/LRU/OPT。
-
-## 目录
+- **鎾斁 / 鏆傚仠 / 鍗曟 / 閲嶇疆**锛涙帓搴忋€佹暟鎹粨鏋勪笌杩涢樁瀹為獙瀹ゆ敮鎸侀€熷害鍊嶇巼銆?- **閫愬抚鐘舵€佸彲瑙嗗寲**锛氭煴鐘舵暟缁勩€丼VG 鏍戙€佸爢涓庢．鏋椼€佺敇鐗瑰浘銆丏P 琛ㄣ€佸瓧绗︿覆瀵归綈銆佹暎鐐瑰嚫鍖呫€佹湁鍚戝浘鎺掑悕銆?- **绠楁硶楠ㄦ灦涓庡綋鍓嶈楂樹寒**锛氭瘡涓疄楠屽閮芥湁浼唬鐮併€佹牳蹇冧笉鍙橀噺涓庡鏉傚害璇存槑锛涢暱浠ｇ爜鍧楀唴閮ㄦ粴鍔ㄥ苟鑷姩璺熼殢褰撳墠琛屻€?- **鍙傛暟鍖栧疄楠?*锛氭敮鎸佽瀵熷悓涓€绠楁硶鍦ㄤ笉鍚屾暟鎹垎甯冦€佽妯°€佸瘑搴︺€佹埅姝㈡湡鍘嬪姏銆侀樆灏肩郴鏁颁笅鐨勮涓哄樊寮傘€?- **鍝嶅簲寮忎笌閿洏鎿嶄綔**锛歚Space` 鎾斁/鏆傚仠銆乣鈫抈 鍗曟锛涚獎灞忎繚鐣欐按骞虫粴鍔ㄥ鍣ㄨ€屼笉鏄帇缂╁浘琛ㄣ€?- **鏈€澶ф祦灏忓疄楠?*锛氬湪鐮旂┒鐢熶笓棰樹腑閫愭澧炲箍锛岃瀵熸畫閲忚矾寰勩€佺摱棰堝閲忋€佺疮璁℃祦閲忎笌鏈€缁堟渶灏忓壊銆?- **浼樺寲杞ㄨ抗**锛氬湪浜岀淮鎹熷け鍦板舰涓婃挱鏀?鍗曟锛屾瘮杈?GD銆丮omentum銆丷MSProp銆丄dam 鐨勪笅闄嶈矾寰勩€?- **娉ㄦ剰鍔涚煩闃?*锛氱湡瀹?Q/K/V 璁＄畻銆佸澶村垏鎹€佸洜鏋滄帺鐮佷笌琛屽拰/鐔?杈撳嚭鑼冩暟銆?- **椤甸潰缃崲**锛氶€愭寮曠敤瑙傚療甯х姸鎬併€佸懡涓?缂洪〉涓庢窐姹板喅绛栵紝姣旇緝 FIFO/LRU/OPT銆?
+## 鐩綍
 
 ```text
-index.html                 算法图谱首页（类型 × 难度）
-styles.css                 基础结构、图算法页面样式与生成图弹层
-atlas.css                  图谱首页、共享实验室布局与各实验室组件
-claude.css                 暖纸张视觉系统（覆盖层，最后加载）
-catalog.js                 算法目录、难度元数据与研究生专题
-atlas.js                   首页筛选、搜索、目录与专题渲染
-lab-core.js                伪代码、播放器、种子与滚动等共享工具
-graph-lab.html             图算法实验台（Dijkstra / BFS / DFS / Prim）
-sorting-lab.html + .js     排序实验室
-structures-lab.html + .js  数据结构实验室（BST / 堆 / 并查集 / AVL / 红黑树）
-scheduling-lab.html + .js  调度实验室
-advanced-lab.html + .js    进阶实验室（LCS / KMP / 凸包 / PageRank）
-research.html + research.js 研究生专题长文 + 可交互最大流
-visuals.html               计算机可视化百科（122 个样例）
-optimization-lab.html      优化实验台
-transformer-lab.html       Transformer / 自注意力实验台
-memory-lab.html            页面置换实验台
-src/visuals/               TypeScript 数据、渲染器与百科交互
-src/labs/                  优化、注意力、页面置换的 TS 交互逻辑
-public/                    favicon 等静态资源
-vite.config.ts             Vite 多页面构建 + 旧页面兼容 + CSS 级联顺序
-vitest.config.ts           TypeScript 数据测试
-tsconfig.json              严格 TypeScript 配置
-dijkstra.js                Dijkstra 核心与轨迹
-graph-algorithms.js        BFS / DFS / Prim 轨迹
-graphs.js                 手工图 + 带种子随机图生成器
-app.js                     图算法 SVG 渲染、拖拽、播放与生成图弹层
-engines/                   sorting / scheduling / tree / advanced / flow 纯算法引擎
-build-standalone.js        生成图算法单文件版（内联基础样式与视觉主题）
+index.html                 绠楁硶鍥捐氨棣栭〉锛堢被鍨?脳 闅惧害锛?styles.css                 鍩虹缁撴瀯銆佸浘绠楁硶椤甸潰鏍峰紡涓庣敓鎴愬浘寮瑰眰
+atlas.css                  鍥捐氨棣栭〉銆佸叡浜疄楠屽甯冨眬涓庡悇瀹為獙瀹ょ粍浠?claude.css                 鏆栫焊寮犺瑙夌郴缁燂紙瑕嗙洊灞傦紝鏈€鍚庡姞杞斤級
+catalog.js                 绠楁硶鐩綍銆侀毦搴﹀厓鏁版嵁涓庣爺绌剁敓涓撻
+atlas.js                   棣栭〉绛涢€夈€佹悳绱€佺洰褰曚笌涓撻娓叉煋
+lab-core.js                浼唬鐮併€佹挱鏀惧櫒銆佺瀛愪笌婊氬姩绛夊叡浜伐鍏?graph-lab.html             鍥剧畻娉曞疄楠屽彴锛圖ijkstra / BFS / DFS / Prim锛?sorting-lab.html + .js     鎺掑簭瀹為獙瀹?structures-lab.html + .js  鏁版嵁缁撴瀯瀹為獙瀹わ紙BST / 鍫?/ 骞舵煡闆?/ AVL / 绾㈤粦鏍戯級
+scheduling-lab.html + .js  璋冨害瀹為獙瀹?advanced-lab.html + .js    杩涢樁瀹為獙瀹わ紙LCS / KMP / 鍑稿寘 / PageRank锛?research.html + research.js 鐮旂┒鐢熶笓棰橀暱鏂?+ 鍙氦浜掓渶澶ф祦
+visuals.html               璁＄畻鏈哄彲瑙嗗寲鐧剧锛?22 涓牱渚嬶級
+optimization-lab.html      浼樺寲瀹為獙鍙?transformer-lab.html       Transformer / 鑷敞鎰忓姏瀹為獙鍙?memory-lab.html            椤甸潰缃崲瀹為獙鍙?src/visuals/               TypeScript 鏁版嵁銆佹覆鏌撳櫒涓庣櫨绉戜氦浜?src/labs/                  浼樺寲銆佹敞鎰忓姏銆侀〉闈㈢疆鎹㈢殑 TS 浜や簰閫昏緫
+public/                    favicon 绛夐潤鎬佽祫婧?vite.config.ts             Vite 澶氶〉闈㈡瀯寤?+ 鏃ч〉闈㈠吋瀹?+ CSS 绾ц仈椤哄簭
+vitest.config.ts           TypeScript 鏁版嵁娴嬭瘯
+tsconfig.json              涓ユ牸 TypeScript 閰嶇疆
+dijkstra.js                Dijkstra 鏍稿績涓庤建杩?graph-algorithms.js        BFS / DFS / Prim 杞ㄨ抗
+graphs.js                 鎵嬪伐鍥?+ 甯︾瀛愰殢鏈哄浘鐢熸垚鍣?app.js                     鍥剧畻娉?SVG 娓叉煋銆佹嫋鎷姐€佹挱鏀句笌鐢熸垚鍥惧脊灞?engines/                   sorting / scheduling / tree / advanced / flow 绾畻娉曞紩鎿?build-standalone.js        鐢熸垚鍥剧畻娉曞崟鏂囦欢鐗堬紙鍐呰仈鍩虹鏍峰紡涓庤瑙変富棰橈級
 deploy/                    Nginx + Docker Compose
-tests/                     Node 单元测试、Vitest 数据测试与 CDP 浏览器检查脚本
-.github/                   GitHub Actions CI / Pages
+tests/                     Node 鍗曞厓娴嬭瘯銆乂itest 鏁版嵁娴嬭瘯涓?CDP 娴忚鍣ㄦ鏌ヨ剼鏈?.github/                   GitHub Actions CI / Pages
 ```
 
-## 算法引擎
+## 绠楁硶寮曟搸
 
-图形与控制层只消费引擎产出的不可变轨迹快照；纯引擎也可以单独在 Node 或浏览器中复用。
-
-| 引擎 | 能力 |
+鍥惧舰涓庢帶鍒跺眰鍙秷璐瑰紩鎿庝骇鍑虹殑涓嶅彲鍙樿建杩瑰揩鐓э紱绾紩鎿庝篃鍙互鍗曠嫭鍦?Node 鎴栨祻瑙堝櫒涓鐢ㄣ€?
+| 寮曟搸 | 鑳藉姏 |
 | --- | --- |
-| [`engines/sorting-engine.js`](engines/sorting-engine.js) | 8 种排序、分布生成器、逐帧比较/交换/计数快照 |
-| [`engines/scheduling-engine.js`](engines/scheduling-engine.js) | 6 种调度策略、作业生成、甘特段时间片与指标 |
-| [`engines/tree-engine.js`](engines/tree-engine.js) | BST / AVL / 红黑树插入与查找轨迹、旋转/染色事件、不变量统计 |
-| [`engines/advanced-engine.js`](engines/advanced-engine.js) | LCS、KMP、Andrew 凸包、PageRank 及各自数据生成器 |
-| [`engines/flow-engine.js`](engines/flow-engine.js) | Edmonds–Karp 最大流、逐步增广快照、最小割与可达集 |
+| [`engines/sorting-engine.js`](engines/sorting-engine.js) | 8 绉嶆帓搴忋€佸垎甯冪敓鎴愬櫒銆侀€愬抚姣旇緝/浜ゆ崲/璁℃暟蹇収 |
+| [`engines/scheduling-engine.js`](engines/scheduling-engine.js) | 6 绉嶈皟搴︾瓥鐣ャ€佷綔涓氱敓鎴愩€佺敇鐗规鏃堕棿鐗囦笌鎸囨爣 |
+| [`engines/tree-engine.js`](engines/tree-engine.js) | BST / AVL / 绾㈤粦鏍戞彃鍏ヤ笌鏌ユ壘杞ㄨ抗銆佹棆杞?鏌撹壊浜嬩欢銆佷笉鍙橀噺缁熻 |
+| [`engines/advanced-engine.js`](engines/advanced-engine.js) | LCS銆並MP銆丄ndrew 鍑稿寘銆丳ageRank 鍙婂悇鑷暟鎹敓鎴愬櫒 |
+| [`engines/flow-engine.js`](engines/flow-engine.js) | Edmonds鈥揔arp 鏈€澶ф祦銆侀€愭澧炲箍蹇収銆佹渶灏忓壊涓庡彲杈鹃泦 |
 
-树实验聚焦插入与查找；排序/调度/图/进阶均为完整可播放流程。数据结构的删除操作尚未纳入可视化，但引擎与渲染框架可以继续扩展。
+鏍戝疄楠岃仛鐒︽彃鍏ヤ笌鏌ユ壘锛涙帓搴?璋冨害/鍥?杩涢樁鍧囦负瀹屾暣鍙挱鏀炬祦绋嬨€傛暟鎹粨鏋勭殑鍒犻櫎鎿嶄綔灏氭湭绾冲叆鍙鍖栵紝浣嗗紩鎿庝笌娓叉煋妗嗘灦鍙互缁х画鎵╁睍銆?
+## 鏈湴杩愯
 
-## 本地运行
-
-首次：
-
+棣栨锛?
 ```powershell
 pnpm install
 pnpm dev
-# 打开 Vite 输出的 http://127.0.0.1:5173/
+# 鎵撳紑 Vite 杈撳嚭鐨?http://127.0.0.1:5173/
 ```
 
-旧版经典页面仍可以直接双击打开，但新增的可视化百科、优化、Transformer 与内存实验台使用 TypeScript 模块，需要通过 Vite 或静态服务器访问。
-
-图算法单文件版：[`dijkstra-visualizer.html`](dijkstra-visualizer.html)。该文件把图算法所需 CSS/JavaScript 全部内联，适合离线分享。
-
-## 开发、测试与构建
+鏃х増缁忓吀椤甸潰浠嶅彲浠ョ洿鎺ュ弻鍑绘墦寮€锛屼絾鏂板鐨勫彲瑙嗗寲鐧剧銆佷紭鍖栥€乀ransformer 涓庡唴瀛樺疄楠屽彴浣跨敤 TypeScript 妯″潡锛岄渶瑕侀€氳繃 Vite 鎴栭潤鎬佹湇鍔″櫒璁块棶銆?
+鍥剧畻娉曞崟鏂囦欢鐗堬細[`dijkstra-visualizer.html`](dijkstra-visualizer.html)銆傝鏂囦欢鎶婂浘绠楁硶鎵€闇€ CSS/JavaScript 鍏ㄩ儴鍐呰仈锛岄€傚悎绂荤嚎鍒嗕韩銆?
+## 寮€鍙戙€佹祴璇曚笌鏋勫缓
 
 ```powershell
-pnpm run typecheck  # 严格 TypeScript 检查
-pnpm test           # 101 个 Node 用例 + 4 个 Vitest 数据用例
-pnpm run build      # 单文件图算法 + Vite 多页面生产构建到 dist/
-pnpm run preview    # 预览 dist/
+pnpm run typecheck  # 涓ユ牸 TypeScript 妫€鏌?pnpm test           # 101 涓?Node 鐢ㄤ緥 + 4 涓?Vitest 鏁版嵁鐢ㄤ緥
+pnpm run build      # 鍗曟枃浠跺浘绠楁硶 + Vite 澶氶〉闈㈢敓浜ф瀯寤哄埌 dist/
+pnpm run preview    # 棰勮 dist/
 ```
 
-当前测试覆盖：Dijkstra/BFS/DFS/Prim、随机图生成器、8 种排序轨迹、6 种调度器、BST/AVL/红黑树不变量、LCS/KMP/凸包/PageRank、Edmonds–Karp 与最小割、专题锚点、122 条可视化数据的唯一性/完整性/链接有效性，共 **105 个用例**。
+褰撳墠娴嬭瘯瑕嗙洊锛欴ijkstra/BFS/DFS/Prim銆侀殢鏈哄浘鐢熸垚鍣ㄣ€? 绉嶆帓搴忚建杩广€? 绉嶈皟搴﹀櫒銆丅ST/AVL/绾㈤粦鏍戜笉鍙橀噺銆丩CS/KMP/鍑稿寘/PageRank銆丒dmonds鈥揔arp 涓庢渶灏忓壊銆佷笓棰橀敋鐐广€?22 鏉″彲瑙嗗寲鏁版嵁鐨勫敮涓€鎬?瀹屾暣鎬?閾炬帴鏈夋晥鎬э紝鍏?**105 涓敤渚?*銆?
+娴忚鍣ㄦ鏌ヨ剼鏈?`tests/browser-check.mjs` 浣跨敤 Chrome DevTools Protocol锛屾敮鎸佺湡瀹炴挱鏀?鍗曟銆佺Щ鍔ㄧ灏哄銆佹埅鍥惧拰 DOM 鐘舵€佹鏌ワ紱瀹冧笉灞炰簬 `npm test`锛岄渶瑕佸厛鍚姩甯﹁繙绋嬭皟璇曠鍙ｇ殑 Chrome銆?
+## 鎶€鏈灦鏋?
+- **闈欐€佷紭鍏?*锛氭墍鏈夊彲瑙嗗寲鍦ㄦ祻瑙堝櫒鍐呰繍琛岋紝鐢熶骇浜х墿鏄函闈欐€?`dist/`锛屽彲閮ㄧ讲鍒?Nginx銆丟itHub Pages 鎴栦换鎰?CDN銆?- **Vite + TypeScript**锛氭柊椤甸潰浣跨敤 TS 妯″潡锛涙棫椤甸潰淇濈暀缁忓吀鑴氭湰锛岀敱 Vite 澶氶〉闈㈡瀯寤轰笌鍏煎澶嶅埗灞傞€愭杩佺Щ銆?- **pnpm + CI**锛歚pnpm-lock.yaml` 閿佸畾渚濊禆锛孏itHub Actions 鎵ц typecheck銆?05 涓祴璇曚笌鐢熶骇鏋勫缓锛汸ages 鑷姩閮ㄧ讲鍚屼竴浠?`dist/`銆?- **122 鏉＄被鍨嬪寲鏁版嵁**锛氭墍鏈夊彲瑙嗗寲绗旇鐢?`src/visuals/data` 涓殑绫诲瀷鍖栨潯鐩敓鎴愶紝娓叉煋鍣ㄥ湪 `src/visuals/render.ts`锛屾柊澧炲唴瀹逛笉闇€瑕佸鍒堕〉闈㈡ā鏉裤€?- **鏃犺繍琛屾椂渚濊禆**锛氬浘褰㈠叏閮ㄦ槸鍘熺敓 SVG/DOM锛涙病鏈夊浘琛ㄥ簱銆丆SS 妗嗘灦鎴栧悗绔湇鍔°€?- **CSS 绾ц仈淇濇姢**锛氱敓浜ф瀯寤轰細鎶?`atlas 鈫?claude 鈫?visuals` 鎺掑埌姝ｇ‘椤哄簭锛岄伩鍏嶆棫涓婚瑕嗙洊瑙嗚灞傘€?
+褰撳墠娌℃湁鍚庣銆傝处鎴枫€佸涔犺繘搴﹀悓姝ャ€丄I 璁茶В鎴栧唴瀹圭鐞嗙湡姝ｅ嚭鐜伴渶姹傛椂锛屽啀鍔犱竴涓杽 API 鏈嶅姟鍗冲彲锛涗笉寤鸿涓轰簡鈥滃墠鍚庣鍒嗙鈥濇彁鍓嶅紩鍏ユ暟鎹簱涓庨壌鏉冦€?
+## 璁捐璇存槑
 
-浏览器检查脚本 `tests/browser-check.mjs` 使用 Chrome DevTools Protocol，支持真实播放/单步、移动端尺寸、截图和 DOM 状态检查；它不属于 `npm test`，需要先启动带远程调试端口的 Chrome。
+瑙嗚閲囩敤 Claude 瀹樼綉寮忔殩绾稿紶闃呰鐣岄潰锛氳薄鐗欒壊搴曘€佺櫧鑹插崱鐗囥€佽繎榛戞枃瀛椼€侀櫠鍦熻壊寮鸿皟锛屽睍绀烘爣棰樼敤琛嚎浣擄紝姝ｆ枃浠?16px 宸﹀彸涓轰富锛岃緟鍔╂爣绛句笉浣庝簬 11鈥?2px銆傚師鍏?7鈥?0px 鐨勬祬鐏版爣绛捐鏁翠綋鏇挎崲锛屼唬鐮佸潡銆佸浘绀烘爣绛俱€佽〃鏍间笌绉诲姩绔帶浠朵篃鍚屾鏀惧ぇ骞舵彁楂樺姣斿害銆?
+棰滆壊璇箟淇濇寔绋冲畾锛氶紶灏捐崏缁胯〃绀哄凡灏变綅/宸插畬鎴愶紝璧煶琛ㄧず褰撳墠鍔ㄤ綔锛屾绱笌闄跺湡鑹叉爣璁伴珮绾х姸鎬併€傛墍鏈夊浘褰㈢敱鍘熺敓 SVG 鎴?DOM 缁樺埗锛沗claude.css` 鍙鐩栬瑙夛紝涓嶆敼鍙樹笟鍔＄被鍚嶆垨 SVG 缁撴瀯銆?
+## 閮ㄧ讲
 
-## 技术架构
+鏈嶅姟鍣ㄧ洰褰曠害瀹氥€侀暅鍍忋€佸彧璇绘牴鏂囦欢绯荤粺銆佸仴搴锋鏌ャ€佹洿鏂颁笌鍥炴粴姝ラ瑙?[`deploy/README.md`](deploy/README.md)銆傜敓浜ч儴缃蹭娇鐢?`pnpm run build` 鐢熸垚鐨?`dist/`銆傚綋鍓嶇嚎涓婂湴鍧€涓猴細
 
-- **静态优先**：所有可视化在浏览器内运行，生产产物是纯静态 `dist/`，可部署到 Nginx、GitHub Pages 或任意 CDN。
-- **Vite + TypeScript**：新页面使用 TS 模块；旧页面保留经典脚本，由 Vite 多页面构建与兼容复制层逐步迁移。
-- **122 条类型化数据**：所有可视化笔记由 `src/visuals/data` 中的类型化条目生成，渲染器在 `src/visuals/render.ts`，新增内容不需要复制页面模板。
-- **无运行时依赖**：图形全部是原生 SVG/DOM；没有图表库、CSS 框架或后端服务。
-- **CSS 级联保护**：生产构建会把 `atlas → claude → visuals` 排到正确顺序，避免旧主题覆盖视觉层。
+- Atlas锛?http://154.222.16.237:9000/>
+- GitHub Pages锛?https://zfqxuz.github.io/algorithm-atlas/>
+- 鍙鍖栫櫨绉戯細<http://154.222.16.237:9000/visuals.html>
+- 浼樺寲瀹為獙鍙帮細<http://154.222.16.237:9000/optimization-lab.html>
+- Transformer 瀹為獙鍙帮細<http://154.222.16.237:9000/transformer-lab.html>
+- 鍐呭瓨瀹為獙鍙帮細<http://154.222.16.237:9000/memory-lab.html>
+- 鍥剧畻娉曞疄楠屽彴锛?http://154.222.16.237:9000/graph-lab.html>
+- 鐮旂┒鐢熶笓棰橈細<http://154.222.16.237:9000/research.html>
+- 鍗曟枃浠跺浘绠楁硶锛?http://154.222.16.237:9000/dijkstra-visualizer.html>
+- 鍋ュ悍妫€鏌ワ細<http://154.222.16.237:9000/healthz>
 
-当前没有后端。账户、学习进度同步、AI 讲解或内容管理真正出现需求时，再加一个薄 API 服务即可；不建议为了“前后端分离”提前引入数据库与鉴权。
+## License
 
-## 设计说明
+MIT 漏 2026 zfqxuz. See [`LICENSE`](LICENSE).
 
-视觉采用 Claude 官网式暖纸张阅读界面：象牙色底、白色卡片、近黑文字、陶土色强调，展示标题用衬线体，正文以 16px 左右为主，辅助标签不低于 11–12px。原先 7–10px 的浅灰标签被整体替换，代码块、图示标签、表格与移动端控件也同步放大并提高对比度。
-
-颜色语义保持稳定：鼠尾草绿表示已就位/已完成，赭石表示当前动作，梅紫与陶土色标记高级状态。所有图形由原生 SVG 或 DOM 绘制；`claude.css` 只覆盖视觉，不改变业务类名或 SVG 结构。
-
-## 部署
-
-服务器目录约定、镜像、只读根文件系统、健康检查、更新与回滚步骤见 [`deploy/README.md`](deploy/README.md)。生产部署使用 `npm run build` 生成的 `dist/`。当前线上地址为：
-
-- Atlas：<http://154.222.16.237:9000/>
-- 可视化百科：<http://154.222.16.237:9000/visuals.html>
-- 优化实验台：<http://154.222.16.237:9000/optimization-lab.html>
-- Transformer 实验台：<http://154.222.16.237:9000/transformer-lab.html>
-- 内存实验台：<http://154.222.16.237:9000/memory-lab.html>
-- 图算法实验台：<http://154.222.16.237:9000/graph-lab.html>
-- 研究生专题：<http://154.222.16.237:9000/research.html>
-- 单文件图算法：<http://154.222.16.237:9000/dijkstra-visualizer.html>
-- 健康检查：<http://154.222.16.237:9000/healthz>
+Issues and pull requests are welcome; see [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`ROADMAP.md`](ROADMAP.md).
