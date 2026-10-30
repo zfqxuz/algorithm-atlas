@@ -3,6 +3,7 @@
    Warm paper, dense visual notes, Claude-inspired reading system.
    ========================================================= */
 
+:root,
 .visuals-page {
   --domain-algorithms: #667558;
   --domain-optimization: #9a6c25;
@@ -491,7 +492,12 @@
 .vcard[data-domain="theory"] { --vz-accent: var(--domain-theory); }
 .vcard[data-domain="se"] { --vz-accent: var(--domain-se); }
 
+.cs-atlas-app {
+  margin-top: 18px;
+}
+
 .vcard-visual {
+  position: relative;
   height: auto;
   aspect-ratio: 2 / 1;
   padding: 7px 7px 0;
@@ -501,6 +507,48 @@
     linear-gradient(90deg, rgba(133, 116, 91, 0.045) 1px, transparent 1px),
     #fbf8f2;
   background-size: 24px 24px;
+}
+
+.vcard-live-tag {
+  position: absolute;
+  z-index: 2;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  border: 1px solid rgba(191, 91, 59, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 253, 248, 0.84);
+  color: var(--vz-accent, var(--accent));
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  pointer-events: none;
+}
+
+.vcard-progress {
+  position: absolute;
+  z-index: 2;
+  right: 7px;
+  bottom: 0;
+  left: 7px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(191, 91, 59, 0.12);
+  pointer-events: none;
+}
+
+.vcard-progress i {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--vz-accent, var(--accent));
+  transition: width 280ms ease;
 }
 
 .vcard-visual svg {
@@ -745,7 +793,7 @@
 
 .vz .vz-node-label {
   fill: var(--ink);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
   text-anchor: middle;
   dominant-baseline: middle;
@@ -785,7 +833,7 @@
 .vz .vz-cell-text {
   fill: #4f473c;
   font-family: var(--font-mono);
-  font-size: 8.5px;
+  font-size: 10px;
   font-weight: 500;
   text-anchor: middle;
   dominant-baseline: middle;
@@ -830,6 +878,102 @@
 
 .vz .vz-block.is-hot + .vz-block-label {
   fill: #fffaf2;
+}
+
+/* Dynamic players: elements fade in, the current step gets the accent. */
+.vz.vz-anim [data-vz] {
+  transition: opacity 280ms ease, fill 280ms ease, stroke 280ms ease, filter 280ms ease;
+}
+
+.vz.vz-anim [data-vz]:not(.vz-seen) {
+  opacity: 0.1;
+}
+
+.vz [data-vz].vz-seen {
+  opacity: 1;
+}
+
+.vz [data-vz].vz-active {
+  filter: drop-shadow(0 0 4px rgba(191, 91, 59, 0.28));
+}
+
+.vz .vz-bar.vz-active {
+  fill: var(--vz-accent, var(--accent));
+}
+
+.vz .vz-node.vz-active {
+  fill: color-mix(in srgb, var(--vz-accent, var(--accent)) 18%, #fffdf8);
+  stroke: var(--vz-accent, var(--accent));
+  stroke-width: 2.4;
+}
+
+.vz .vz-edge.vz-active {
+  stroke: var(--vz-accent, var(--accent));
+  stroke-width: 2.4;
+}
+
+.vz .vz-cell.vz-active {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.vz .vz-block.vz-active {
+  fill: color-mix(in srgb, var(--vz-accent, var(--accent)) 35%, #fffdf8);
+  stroke: var(--vz-accent, var(--accent));
+  stroke-width: 1.7;
+}
+
+.vz .vz-table-cell.vz-active,
+.vz .vz-cell-text.vz-active {
+  fill: var(--accent-strong);
+  font-weight: 700;
+}
+
+.vz .vz-playhead {
+  stroke: var(--accent);
+  stroke-width: 1.2;
+  stroke-dasharray: 3 3;
+  pointer-events: none;
+}
+
+.vm-anim {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.vm-anim button {
+  min-height: 30px;
+  padding: 0 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.vm-anim button:hover {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.vm-anim-label {
+  margin-left: auto;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vz.vz-anim [data-vz] {
+    transition: none;
+  }
 }
 
 /* ---------- detail modal ---------- */

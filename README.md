@@ -2,7 +2,7 @@
 
 从本科基础到博一难度的交互式计算机学习站：**27 个算法实验室、122 个可视化样例、6 个研究生专题**，以及优化 / Transformer / 内存三个新的交互实验台。项目采用 **Vite + TypeScript + 原生 SVG**，无图表库、无运行时后端依赖。
 
-![计算机可视化百科](screenshots/visuals.png)
+![首页内嵌的计算机全景动态演示](screenshots/visuals.png)
 
 [![CI](https://github.com/zfqxuz/algorithm-atlas/actions/workflows/ci.yml/badge.svg)](https://github.com/zfqxuz/algorithm-atlas/actions/workflows/ci.yml)
 
@@ -16,7 +16,7 @@
 
 > 若本机系统代理会拦截非标准端口，请把 `154.222.16.237` 加入代理绕过列表，或暂时关闭代理。
 
-更多预览：[优化实验台](screenshots/optimization-lab.png) · [Transformer 实验台](screenshots/transformer-lab.png) · [内存实验台](screenshots/memory-lab.png) · [可视化百科](screenshots/visuals.png) · [移动端目录](screenshots/visuals-mobile.png) · [手机端展开](screenshots/gallery-modal-mobile.png) · [排序实验室](screenshots/sorting-lab.png) · [红黑树](screenshots/structures-rb.png) · [调度实验室](screenshots/scheduling-lab.png) · [LCS 动态规划](screenshots/advanced-lcs.png) · [图算法实验台](screenshots/graph-lab.png) · [生成图参数面板](screenshots/graph-modal-mobile.png) · [研究生专题](screenshots/research-top.png) · [最大流交互](screenshots/research-flow.png)
+更多预览：[优化实验台](screenshots/optimization-lab.png) · [Transformer 实验台](screenshots/transformer-lab.png) · [内存实验台](screenshots/memory-lab.png) · [计算机全景](screenshots/visuals.png) · [移动端动态演示](screenshots/visuals-mobile.png) · [手机端展开](screenshots/gallery-modal-mobile.png) · [排序实验室](screenshots/sorting-lab.png) · [红黑树](screenshots/structures-rb.png) · [调度实验室](screenshots/scheduling-lab.png) · [LCS 动态规划](screenshots/advanced-lcs.png) · [图算法实验台](screenshots/graph-lab.png) · [生成图参数面板](screenshots/graph-modal-mobile.png) · [研究生专题](screenshots/research-top.png) · [最大流交互](screenshots/research-flow.png)
 
 ## 一张图谱，五个经典实验室 + 三个新实验台 + 一个专题层
 
@@ -30,12 +30,12 @@
 | 优化实验台 | [`optimization-lab.html`](optimization-lab.html) | GD、Momentum、RMSProp、Adam；二维损失地形与轨迹 | L2–L3 |
 | Transformer 实验台 | [`transformer-lab.html`](transformer-lab.html) | 真实 Q/K/V、多头注意力、因果掩码、行统计 | L3–L4 |
 | 内存实验台 | [`memory-lab.html`](memory-lab.html) | FIFO / LRU / OPT 页面置换、命中率与帧状态 | L2 |
-| 可视化百科 | [`visuals.html`](visuals.html) | 122 个跨 14 个领域的视觉笔记，领域/难度/关键词检索 | L1–L4 |
+| 计算机全景 | [`index.html#cs-atlas`](index.html#cs-atlas) | 122 个跨 14 个领域的自动播放动态演示，内嵌在首页；支持单步/暂停/深链 | L1–L4 |
 | 研究生专题 | [`research.html`](research.html) | 最大流/最小割、LP、NP 完全性、近似、随机、在线；含最大流交互 | L4 |
 
-## 122 个可视化样例
+## 122 个动态演示（已并入首页）
 
-[`visuals.html`](visuals.html) 用 14 个领域覆盖计算机专业从本科到研究生的概念地图：
+[`index.html#cs-atlas`](index.html#cs-atlas) 用 14 个领域覆盖计算机专业从本科到研究生的概念地图。每个条目都是自动播放的原生 SVG 演示：柱状扫描、矩阵逐格、图遍历、树展开、时间线播放头、拓扑脉冲等；点击后进入大图，可暂停、单步、重置。旧地址 `visuals.html` 只做锚点重定向，不再承载独立内容。
 
 - **算法与数据结构**：二分、哈希、BFS/DFS、拓扑、并查集、Trie、线段树、树状数组、单调栈、滑动窗口、LRU、布隆过滤器、跳表
 - **优化与运筹**：梯度下降、SGD、动量、Adam、牛顿法、模拟退火、遗传算法、粒子群、线性规划、分支定界
@@ -46,7 +46,7 @@
 - **网络与拓扑**：OSI、星型/环型/Fat-Tree、链路状态、距离向量、TCP 握手/拥塞、滑动窗口、CSMA/CD、NAT/子网
 - **数据库、编译、分布式、安全、图形学、计算理论、软件工程**：B+ 树、连接、2PL、MVCC、LSM、DFA、AST、SSA、GC、CAP、Raft、Paxos、一致性哈希、MapReduce、AES、RSA、DH、Merkle、TLS/PKI、ZKP、Bresenham、光栅化、Bezier、光线追踪、图灵机、停机问题、Git DAG、CI/CD 等
 
-每个样例都有独立的小图、机制说明、观察点、标签与延伸链接；卡片可展开为大图和完整解释，支持深链 `#entry-id`、上一张/下一张与复制链接。
+每个样例都有自动播放的动态小图、机制说明、观察点、标签与延伸链接；卡片可展开为大图，提供暂停、单步、重置与步骤标签，支持深链 `#entry-id`、上一张/下一张与复制链接。
 
 难度层级：
 
@@ -102,7 +102,7 @@ structures-lab.html + .js  数据结构实验室（BST / 堆 / 并查集 / AVL /
 scheduling-lab.html + .js  调度实验室
 advanced-lab.html + .js    进阶实验室（LCS / KMP / 凸包 / PageRank）
 research.html + research.js 研究生专题长文 + 可交互最大流
-visuals.html               计算机可视化百科（122 个样例）
+visuals.html               兼容跳转到 index.html#cs-atlas（不再承载内容）
 optimization-lab.html      优化实验台
 transformer-lab.html       Transformer / 自注意力实验台
 memory-lab.html            页面置换实验台
@@ -147,7 +147,7 @@ pnpm dev
 # 打开 Vite 输出的 http://127.0.0.1:5173/
 ```
 
-旧版经典页面仍可以直接双击打开，但新增的可视化百科、优化、Transformer 与内存实验台使用 TypeScript 模块，需要通过 Vite 或静态服务器访问。
+旧版经典页面仍可以直接双击打开，但首页内嵌的 122 个动态演示、优化、Transformer 与内存实验台使用 TypeScript 模块，需要通过 Vite 或静态服务器访问。
 
 图算法单文件版：[`dijkstra-visualizer.html`](dijkstra-visualizer.html)。该文件把图算法所需 CSS/JavaScript 全部内联，适合离线分享。
 
@@ -187,7 +187,7 @@ pnpm run preview    # 预览 dist/
 
 - Atlas：<http://154.222.16.237:9000/>
 - GitHub Pages：<https://zfqxuz.github.io/algorithm-atlas/>
-- 可视化百科：<http://154.222.16.237:9000/visuals.html>
+- 计算机全景（首页内）：<http://154.222.16.237:9000/#cs-atlas>
 - 优化实验台：<http://154.222.16.237:9000/optimization-lab.html>
 - Transformer 实验台：<http://154.222.16.237:9000/transformer-lab.html>
 - 内存实验台：<http://154.222.16.237:9000/memory-lab.html>

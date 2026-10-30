@@ -29,7 +29,7 @@ pnpm run preview
 
 - Put pure logic in `src/labs/` (or a core module) and DOM wiring in a page entry.
 - Keep the page accessible: labels, visible focus, keyboard controls, reduced-motion-safe animation.
-- Add a screenshot and link it from `visuals.html` and `README.md`.
+- Add a screenshot and link it from the embedded `#cs-atlas` section and `README.md`; do not create a separate field-guide page.
 
 ## Pull requests
 

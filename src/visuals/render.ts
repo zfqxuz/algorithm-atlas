@@ -93,6 +93,7 @@ function renderBars(spec: BarsSpec): SVGSVGElement {
     svg.appendChild(svgEl('rect', {
       x: x.toFixed(2), y: y.toFixed(2), width: barWidth.toFixed(2), height: barHeight.toFixed(2),
       rx: Math.min(2, barWidth / 2), class: highlight.has(index) ? 'vz-bar is-hot' : 'vz-bar',
+      'data-vz': 'bar', 'data-index': index,
     }));
     if (spec.labels?.[index] && values.length <= 12) {
       svg.appendChild(text(truncate(spec.labels[index] ?? '', 4), x + barWidth / 2, top + height + 12, {
@@ -159,6 +160,7 @@ function renderMatrix(spec: MatrixSpec): SVGSVGElement {
         height: cellSize - 1.2,
         rx: 1.5,
         class: isHot ? 'vz-cell is-hot' : 'vz-cell',
+        'data-vz': 'cell', 'data-row': row, 'data-col': col,
       });
       if (spec.heat && intensity > 0 && !isHot) {
         rect.setAttribute('style', `fill:var(--vz-accent);fill-opacity:${(0.08 + intensity * 0.34).toFixed(3)}`);
@@ -207,7 +209,7 @@ function renderChart(spec: ChartSpec): SVGSVGElement {
     if (!points.length) return;
     if (series.mode !== 'dots') {
       const d = points.map(([x, y], index) => `${index === 0 ? 'M' : 'L'} ${mapX(x).toFixed(2)} ${mapY(y).toFixed(2)}`).join(' ');
-      const path = svgEl('path', { d, class: 'vz-line' });
+      const path = svgEl('path', { d, class: 'vz-line', 'data-vz': 'line', 'data-series': seriesIndex });
       if (series.color) path.setAttribute('style', `stroke:${series.color}`);
       svg.appendChild(path);
     }
@@ -218,6 +220,7 @@ function renderChart(spec: ChartSpec): SVGSVGElement {
         cy: mapY(y).toFixed(2),
         r: isHot ? 4 : series.mode === 'dots' ? 3 : 2,
         class: isHot ? 'vz-dot is-hot' : 'vz-dot',
+        'data-vz': 'dot', 'data-series': seriesIndex, 'data-point': pointIndex,
       });
       if (series.color && !isHot) dot.setAttribute('style', `stroke:${series.color}`);
       svg.appendChild(dot);
@@ -250,7 +253,7 @@ function renderGraph(spec: GraphSpec): SVGSVGElement {
   if (spec.directed !== false) markerDefs(svg, markerId, false);
   const highlight = new Set(spec.highlight ?? []);
   const edgeCount = spec.edges.length;
-  spec.edges.forEach((edge) => {
+  spec.edges.forEach((edge, edgeIndex) => {
     const from = map[edge.a];
     const to = map[edge.b];
     if (!from || !to) return;
@@ -267,6 +270,7 @@ function renderGraph(spec: GraphSpec): SVGSVGElement {
     const line = svgEl('line', {
       x1: x1.toFixed(2), y1: y1.toFixed(2), x2: x2.toFixed(2), y2: y2.toFixed(2),
       class: hot ? 'vz-edge is-hot' : 'vz-edge',
+      'data-vz': 'edge', 'data-edge': edgeIndex, 'data-a': edge.a, 'data-b': edge.b,
     });
     if (spec.directed !== false) line.setAttribute('marker-end', `url(#${markerId})`);
     svg.appendChild(line);
@@ -287,6 +291,7 @@ function renderGraph(spec: GraphSpec): SVGSVGElement {
       cy: position.y.toFixed(2),
       r: nodes.length > 7 ? 10 : 12,
       class: hot ? 'vz-node is-hot' : 'vz-node',
+      'data-vz': 'node', 'data-node': node.id,
     }));
     svg.appendChild(text(truncate(position.label, 4), position.x, position.y + 3, {
       class: 'vz-node-label',
@@ -346,7 +351,7 @@ function renderTree(spec: TreeSpec): SVGSVGElement {
     if (parent) {
       svg.appendChild(svgEl('line', {
         x1: parent.x.toFixed(2), y1: parent.y.toFixed(2), x2: position.x.toFixed(2), y2: position.y.toFixed(2),
-        class: 'vz-edge',
+        class: 'vz-edge', 'data-vz': 'edge', 'data-a': node.parent ?? '', 'data-b': node.id,
       }));
     }
     const hot = highlight.has(node.id);
@@ -355,6 +360,7 @@ function renderTree(spec: TreeSpec): SVGSVGElement {
       cy: position.y.toFixed(2),
       r: spec.nodes.length > 8 ? 9 : 11,
       class: hot ? 'vz-node is-hot' : 'vz-node',
+      'data-vz': 'node', 'data-node': node.id,
     }));
     svg.appendChild(text(truncate(node.label, 4), position.x, position.y + 3, { class: 'vz-node-label' }));
   });
@@ -377,6 +383,7 @@ function renderPipeline(spec: PipelineSpec): SVGSVGElement {
     svg.appendChild(svgEl('rect', {
       x: x.toFixed(2), y, width: width.toFixed(2), height, rx: 5,
       class: hot ? 'vz-block is-hot' : 'vz-block',
+      'data-vz': 'stage', 'data-index': index,
     }));
     svg.appendChild(text(String(index + 1), x + width / 2, y - 7, {
       'text-anchor': 'middle', class: 'vz-sub',
@@ -411,6 +418,7 @@ function renderLayers(spec: LayersSpec): SVGSVGElement {
     svg.appendChild(svgEl('rect', {
       x: 14, y: y + 0.8, width: 332, height: Math.max(12, height - 3), rx: 4,
       class: hot ? 'vz-block is-hot' : 'vz-block',
+      'data-vz': 'layer', 'data-index': index,
     }));
     svg.appendChild(text(truncate(layer.label, 12), 22, y + height / 2 + 2.8, {
       class: 'vz-title',
@@ -458,6 +466,7 @@ function renderTimeline(spec: TimelineSpec): SVGSVGElement {
       svg.appendChild(svgEl('rect', {
         x, y: y + 4, width, height: Math.max(12, rowHeight - 11), rx: 3,
         class: block.hot ? 'vz-block is-hot' : 'vz-block',
+        'data-vz': 'block', 'data-row': rowIndex,
       }));
       if (width > 22) {
         svg.appendChild(text(truncate(block.label, 6), x + width / 2, y + rowHeight / 2 + 2, {
@@ -494,6 +503,7 @@ function renderMemory(spec: MemorySpec): SVGSVGElement {
     svg.appendChild(svgEl('rect', {
       x: x + 1.5, y: y + 1.5, width: width - 3, height: height - 3, rx: 3,
       class: hot ? 'vz-cell is-hot' : 'vz-cell',
+      'data-vz': 'cell', 'data-index': index,
     }));
     svg.appendChild(text(truncate(cell, 6), x + width / 2, y + height / 2 + 2.5, { class: 'vz-cell-text' }));
     if (spec.labels?.[index]) {
@@ -537,7 +547,7 @@ function renderTable(spec: TableSpec): SVGSVGElement {
         x1: originX + colIndex * width, y1: y, x2: originX + colIndex * width, y2: y + rowHeight, class: 'vz-axis',
       }));
       svg.appendChild(text(truncate(cell, 7), originX + colIndex * width + width / 2, y + rowHeight / 2 + 2.5, {
-        'text-anchor': 'middle', class: 'vz-cell-text',
+        'text-anchor': 'middle', class: 'vz-cell-text', 'data-vz': 'table-cell', 'data-row': rowIndex, 'data-col': colIndex,
       }));
     });
   });
@@ -559,6 +569,7 @@ function renderStack(spec: StackSpec): SVGSVGElement {
     svg.appendChild(svgEl('rect', {
       x, y: y + 1, width, height: height - 2, rx: 3,
       class: hot ? 'vz-cell is-hot' : 'vz-cell',
+      'data-vz': 'item', 'data-index': index,
     }));
     svg.appendChild(text(truncate(item, 10), x + width / 2, y + height / 2 + 2.5, { class: 'vz-cell-text' }));
   });
@@ -596,6 +607,7 @@ function renderVector(spec: VectorSpec): SVGSVGElement {
       const rect = svgEl('rect', {
         x: x + 0.8, y: y + 0.8, width: cellSize - 1.6, height: rowHeight - 1.6, rx: 2,
         class: spec.highlight === rowIndex ? 'vz-cell is-hot' : 'vz-cell',
+        'data-vz': 'cell', 'data-row': rowIndex, 'data-col': colIndex,
       });
       rect.setAttribute('style', `fill:${positive ? 'var(--vz-accent)' : '#667558'};fill-opacity:${(0.08 + intensity * 0.45).toFixed(3)}`);
       svg.appendChild(rect);
@@ -685,6 +697,7 @@ function renderTopology(spec: TopologySpec): SVGSVGElement {
     if (!from || !to) return;
     svg.appendChild(svgEl('line', {
       x1: from.x, y1: from.y, x2: to.x, y2: to.y, class: 'vz-edge',
+      'data-vz': 'edge', 'data-a': from.label, 'data-b': to.label,
     }));
   });
   positions.forEach((position) => {
@@ -692,6 +705,7 @@ function renderTopology(spec: TopologySpec): SVGSVGElement {
     svg.appendChild(svgEl('circle', {
       cx: position.x, cy: position.y, r: spec.kind === 'fat-tree' ? 9 : 12,
       class: hot ? 'vz-node is-hot' : 'vz-node',
+      'data-vz': 'node', 'data-node': position.label,
     }));
     svg.appendChild(text(truncate(position.label, spec.kind === 'fat-tree' ? 3 : 4), position.x, position.y + 3, {
       class: 'vz-node-label',

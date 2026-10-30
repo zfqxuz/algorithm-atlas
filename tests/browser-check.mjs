@@ -261,6 +261,10 @@ const evaluation = await send('Runtime.evaluate', {
     visualResult: document.querySelector('#visualResultLabel')?.innerText,
     visualModalOpen: document.querySelector('#visualModal') ? !document.querySelector('#visualModal').hidden : null,
     visualModalTitle: document.querySelector('#vmTitle')?.innerText,
+    visualActive: document.querySelectorAll('.vcard [data-vz].vz-active').length,
+    visualSeen: document.querySelectorAll('.vcard [data-vz].vz-seen').length,
+    visualPlayLabel: document.querySelector('#vmPlay')?.innerText,
+    visualAnimLabel: document.querySelector('#vmAnimLabel')?.innerText,
     probe: ['.app-shell','.lab-main','.lab-layout','.lab-primary','.adv-stage-wrap','.adv-stage','.lcs-stage','.lcs-table-wrap','.lcs-table','.lab-entries','.lab-panel'].map((selector) => {
       const el = document.querySelector(selector);
       if (!el) return null;

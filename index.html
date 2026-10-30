@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="寻径算法图谱：从本科基础到博一难度的算法、数据结构、调度与优化可视化实验室，支持调整测试数据生成参数。">
+  <meta name="description" content="寻径算法图谱：27 个交互算法实验室、122 个自动播放的计算机动态演示与 6 个研究生专题；覆盖优化、神经网络与 Transformer、操作系统、内存、网络拓扑、数据库、编译、分布式与安全。">
   <meta name="theme-color" content="#f7f4ed">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <title>寻径 · 算法图谱 Algorithm Atlas</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="atlas.css">
   <link rel="stylesheet" href="claude.css">
+  <link rel="stylesheet" href="visuals.css">
 </head>
 <body class="atlas-page">
   <div class="ambient" aria-hidden="true"></div>
@@ -35,7 +36,7 @@
       <div class="topbar-meta atlas-topbar-meta">
         <a class="atlas-top-link" href="graph-lab.html">图算法实验台</a>
         <a class="atlas-top-link" href="research.html">研究生专题</a>
-        <a class="atlas-top-link" href="visuals.html">可视化百科</a>
+        <a class="atlas-top-link" href="#cs-atlas">计算机全景</a>
         <span class="global-status" data-tone="idle">
           <span class="status-beacon" aria-hidden="true"></span>
           <span id="atlasTopCount">载入中</span>
@@ -67,7 +68,7 @@
           </div>
           <dl class="atlas-stats" id="atlasStats">
             <div><dt>交互算法</dt><dd data-stat="algorithms">—</dd></div>
-            <div><dt>类型</dt><dd data-stat="categories">—</dd></div>
+            <div><dt>动态演示</dt><dd>122</dd></div>
             <div><dt>难度层级</dt><dd data-stat="levels">—</dd></div>
             <div><dt>研究生专题</dt><dd data-stat="topics">—</dd></div>
           </dl>
@@ -137,20 +138,20 @@
         <div class="research-grid" id="researchGrid"></div>
       </section>
 
-      <section class="atlas-visual-band" aria-labelledby="visualBandTitle">
+      <section class="atlas-visual-band" id="cs-atlas" aria-labelledby="visualBandTitle">
         <div class="atlas-visual-band-head">
           <div>
             <span class="eyebrow">COMPUTER SCIENCE FIELD GUIDE</span>
             <h2 id="visualBandTitle">把整个计算机专业摊开来看。</h2>
-            <p>122 个可展开的视觉样例：优化与运筹、机器学习、神经网络与 Transformer、操作系统、指令集与内存、网络拓扑、数据库、编译、分布式、安全、图形学与计算理论。</p>
+            <p>122 个会自动播放、可展开、可单步的动态演示：优化与运筹、机器学习、神经网络与 Transformer、操作系统、指令集与内存、网络拓扑、数据库、编译、分布式、安全、图形学与计算理论。</p>
           </div>
-          <div class="atlas-visual-count"><strong>122</strong><span>VISUAL NOTES</span></div>
+          <div class="atlas-visual-count"><strong>122</strong><span>DYNAMIC DEMOS</span></div>
         </div>
         <div class="atlas-visual-domains" aria-label="可视化领域">
           <span>算法与数据结构</span><span>优化与运筹</span><span>机器学习</span><span>神经网络</span><span>Transformer</span><span>操作系统</span><span>体系结构</span><span>网络拓扑</span><span>数据库</span><span>编译原理</span><span>分布式</span><span>安全</span><span>图形学</span><span>计算理论</span>
         </div>
         <div class="atlas-visual-band-actions">
-          <a class="atlas-primary-cta" href="visuals.html">进入可视化百科 <span>→</span></a>
+          <a class="atlas-primary-cta" href="#csAtlasApp">浏览 122 个动态演示 <span>→</span></a>
           <span>14 个领域 · L1–L4 · 全部原生 SVG</span>
         </div>
         <div class="atlas-visual-band-labs">
@@ -160,6 +161,8 @@
           <a href="memory-lab.html">内存</a>
         </div>
       </section>
+
+      <div id="csAtlasApp" class="cs-atlas-app"></div>
 
       <section class="atlas-closing">
         <div>
@@ -188,5 +191,6 @@
 
   <script src="catalog.js"></script>
   <script src="atlas.js"></script>
+  <script type="module" src="/src/visuals/main.ts"></script>
 </body>
 </html>

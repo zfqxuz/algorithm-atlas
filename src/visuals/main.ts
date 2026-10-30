@@ -1,6 +1,8 @@
-import type { Domain, DomainId, Entry, Level } from './types';
+import type { DomainId, Entry, Level } from './types';
 import { domains, domainCounts, entries, entryById } from './data';
+import { createVisualPlayer, type VisualPlayer } from './animate';
 import { renderVisual } from './render';
+import { ATLAS_TEMPLATE } from './template';
 
 const DOMAIN_TONES: Record<DomainId, string> = {
   algorithms: '#667558',
@@ -19,38 +21,47 @@ const DOMAIN_TONES: Record<DomainId, string> = {
   se: '#667558',
 };
 
+function get<T extends Element>(selector: string): T {
+  const node = document.querySelector<T>(selector);
+  if (!node) throw new Error(`Missing visual atlas element ${selector}`);
+  return node;
+}
+
+const appRoot = get<HTMLElement>('#csAtlasApp');
+appRoot.innerHTML = ATLAS_TEMPLATE;
+
 const dom = {
   count: document.querySelector<HTMLElement>('#heroCount'),
   topCount: document.querySelector<HTMLElement>('#topVisualCount'),
-  grid: document.querySelector<HTMLElement>('#visualGrid'),
-  empty: document.querySelector<HTMLElement>('#visualEmpty'),
-  result: document.querySelector<HTMLElement>('#visualResultLabel'),
-  search: document.querySelector<HTMLInputElement>('#visualSearch'),
-  domains: document.querySelector<HTMLElement>('#domainFilters'),
+  grid: get<HTMLElement>('#visualGrid'),
+  empty: get<HTMLElement>('#visualEmpty'),
+  result: get<HTMLElement>('#visualResultLabel'),
+  search: get<HTMLInputElement>('#visualSearch'),
+  domains: get<HTMLElement>('#domainFilters'),
   levels: Array.from(document.querySelectorAll<HTMLButtonElement>('.vfilter')),
-  random: document.querySelector<HTMLButtonElement>('#randomVisual'),
-  modal: document.querySelector<HTMLElement>('#visualModal'),
-  panel: document.querySelector<HTMLElement>('#vmPanel'),
-  vmVisual: document.querySelector<HTMLElement>('#vmVisual'),
-  vmDomain: document.querySelector<HTMLElement>('#vmDomain'),
-  vmLevel: document.querySelector<HTMLElement>('#vmLevel'),
-  vmIndex: document.querySelector<HTMLElement>('#vmIndex'),
-  vmTitle: document.querySelector<HTMLElement>('#vmTitle'),
-  vmEn: document.querySelector<HTMLElement>('#vmEn'),
-  vmSummary: document.querySelector<HTMLElement>('#vmSummary'),
-  vmMechanism: document.querySelector<HTMLElement>('#vmMechanism'),
-  vmObserve: document.querySelector<HTMLElement>('#vmObserve'),
-  vmTags: document.querySelector<HTMLElement>('#vmTags'),
-  vmLinks: document.querySelector<HTMLElement>('#vmLinks'),
-  vmPrev: document.querySelector<HTMLButtonElement>('#vmPrev'),
-  vmNext: document.querySelector<HTMLButtonElement>('#vmNext'),
-  vmClose: document.querySelector<HTMLButtonElement>('#vmClose'),
-  vmCopy: document.querySelector<HTMLButtonElement>('#vmCopy'),
+  random: get<HTMLButtonElement>('#randomVisual'),
+  modal: get<HTMLElement>('#visualModal'),
+  panel: get<HTMLElement>('#vmPanel'),
+  vmVisual: get<HTMLElement>('#vmVisual'),
+  vmDomain: get<HTMLElement>('#vmDomain'),
+  vmLevel: get<HTMLElement>('#vmLevel'),
+  vmIndex: get<HTMLElement>('#vmIndex'),
+  vmTitle: get<HTMLElement>('#vmTitle'),
+  vmEn: get<HTMLElement>('#vmEn'),
+  vmSummary: get<HTMLElement>('#vmSummary'),
+  vmMechanism: get<HTMLElement>('#vmMechanism'),
+  vmObserve: get<HTMLElement>('#vmObserve'),
+  vmTags: get<HTMLElement>('#vmTags'),
+  vmLinks: get<HTMLElement>('#vmLinks'),
+  vmPrev: get<HTMLButtonElement>('#vmPrev'),
+  vmNext: get<HTMLButtonElement>('#vmNext'),
+  vmClose: get<HTMLButtonElement>('#vmClose'),
+  vmCopy: get<HTMLButtonElement>('#vmCopy'),
+  vmPlay: get<HTMLButtonElement>('#vmPlay'),
+  vmStep: get<HTMLButtonElement>('#vmStep'),
+  vmReset: get<HTMLButtonElement>('#vmReset'),
+  vmAnimLabel: get<HTMLElement>('#vmAnimLabel'),
 };
-
-if (Object.values(dom).some((value) => value === null)) {
-  throw new Error('Visual atlas DOM is incomplete.');
-}
 
 const domainById = new Map(domains.map((domain) => [domain.id, domain]));
 const state: { domain: DomainId | 'all'; level: Level | 'all'; query: string } = {
@@ -61,6 +72,8 @@ const state: { domain: DomainId | 'all'; level: Level | 'all'; query: string } =
 let visible: Entry[] = entries.slice();
 let activeEntry: Entry | null = null;
 let lastFocused: HTMLElement | null = null;
+let cardPlayers: VisualPlayer[] = [];
+let modalPlayer: VisualPlayer | null = null;
 
 function make<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -103,23 +116,19 @@ function matches(entry: Entry): boolean {
 function updateVisible(): void {
   visible = entries.filter(matches);
   if (dom.count) dom.count.textContent = String(entries.length);
-  if (dom.topCount) dom.topCount.textContent = `${entries.length} VISUAL NOTES`;
-  if (dom.result) {
-    const domainLabel = state.domain === 'all' ? '全部领域' : domainName(state.domain);
-    const levelLabel = state.level === 'all' ? '全部难度' : state.level;
-    dom.result.innerHTML = '';
-    dom.result.append(
-      `显示 `,
-      Object.assign(make('strong'), { textContent: String(visible.length) }),
-      ` / ${entries.length} 个 · ${domainLabel} · ${levelLabel}`,
-    );
-  }
-  if (dom.empty) dom.empty.hidden = visible.length > 0;
+  if (dom.topCount) dom.topCount.textContent = `${entries.length} DYNAMIC DEMOS`;
+  const domainLabel = state.domain === 'all' ? '全部领域' : domainName(state.domain);
+  const levelLabel = state.level === 'all' ? '全部难度' : state.level;
+  dom.result.replaceChildren();
+  dom.result.append('正在播放 ', Object.assign(make('strong'), { textContent: String(visible.length) }), ` / ${entries.length} 个 · ${domainLabel} · ${levelLabel}`);
+  dom.empty.hidden = visible.length > 0;
   renderGrid();
 }
 
 function renderGrid(): void {
-  if (!dom.grid) return;
+  for (const player of cardPlayers) player.destroy();
+  cardPlayers = [];
+  const pending: Array<{ svg: SVGSVGElement; spec: Entry['visual']; host: HTMLElement; progress: HTMLElement }> = [];
   const fragment = document.createDocumentFragment();
   for (const item of visible) {
     const card = make('article', 'vcard');
@@ -127,18 +136,23 @@ function renderGrid(): void {
     card.dataset.id = item.id;
     card.tabIndex = 0;
     card.setAttribute('role', 'button');
-    card.setAttribute('aria-label', `${item.title}，${domainName(item.domain)}，${item.level}`);
+    card.setAttribute('aria-label', `${item.title}，${domainName(item.domain)}，${item.level}，动态演示`);
 
     const visual = make('div', 'vcard-visual');
-    visual.appendChild(renderVisual(item.visual));
-    const body = make('div', 'vcard-body');
+    const svg = renderVisual(item.visual);
+    visual.appendChild(svg);
+    visual.appendChild(make('span', 'vcard-live-tag', '● 动态'));
+    const progress = make('span', 'vcard-progress');
+    progress.appendChild(make('i'));
+    visual.appendChild(progress);
+    pending.push({ svg, spec: item.visual, host: visual, progress });
 
+    const body = make('div', 'vcard-body');
     const meta = make('div', 'vcard-meta');
     const level = make('span', `vlevel is-${item.level.toLowerCase()}`, item.level);
     const domain = make('span', 'vcard-domain', domainName(item.domain));
     const open = make('span', 'vcard-open', '↗');
     meta.append(level, domain, open);
-
     const title = make('h3', undefined, item.title);
     const en = make('div', 'vcard-en', item.en);
     const summary = make('p', 'vcard-summary', item.summary);
@@ -157,10 +171,20 @@ function renderGrid(): void {
     fragment.appendChild(card);
   }
   dom.grid.replaceChildren(fragment);
+  for (const item of pending) {
+    cardPlayers.push(createVisualPlayer(item.svg, item.spec, {
+      host: item.host,
+      auto: true,
+      progressive: false,
+      onUpdate: (step, total) => {
+        const bar = item.progress.firstElementChild as HTMLElement | null;
+        if (bar) bar.style.width = `${((step + 1) / total) * 100}%`;
+      },
+    }));
+  }
 }
 
 function buildFilters(): void {
-  if (!dom.domains) return;
   const all = make('button', 'domain-filter');
   all.type = 'button';
   all.dataset.domain = 'all';
@@ -204,43 +228,64 @@ function selectLevel(level: Level | 'all'): void {
   updateVisible();
 }
 
+function visualLink(href: string): { href: string; id?: string } {
+  if (href.startsWith('visuals.html#')) return { href: `#${href.split('#')[1]}`, id: href.split('#')[1] };
+  if (href.startsWith('index.html#')) return { href: `#${href.split('#')[1]}`, id: href.split('#')[1] };
+  if (href.startsWith('#')) return { href, id: href.slice(1) };
+  return { href };
+}
+
 function openEntry(id: string, options: { push?: boolean; focus?: boolean } = {}): void {
   const item = entryById.get(id);
-  if (!item || !dom.modal || !dom.panel) return;
+  if (!item) return;
+  modalPlayer?.destroy();
+  modalPlayer = null;
   activeEntry = item;
   lastFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
   dom.panel.dataset.domain = item.domain;
   dom.panel.style.setProperty('--vz-accent', DOMAIN_TONES[item.domain]);
-  dom.vmVisual?.replaceChildren(renderVisual(item.visual));
-  if (dom.vmDomain) dom.vmDomain.textContent = `${domainName(item.domain)} / ${domainEn(item.domain)}`;
-  if (dom.vmLevel) dom.vmLevel.textContent = item.level;
+  dom.vmVisual.replaceChildren();
+  const svg = renderVisual(item.visual);
+  dom.vmVisual.appendChild(svg);
+  dom.vmDomain.textContent = `${domainName(item.domain)} / ${domainEn(item.domain)}`;
+  dom.vmLevel.textContent = item.level;
   const index = visible.findIndex((entry) => entry.id === item.id);
-  if (dom.vmIndex) dom.vmIndex.textContent = `${index >= 0 ? index + 1 : '—'} / ${visible.length || entries.length}`;
-  if (dom.vmTitle) dom.vmTitle.textContent = item.title;
-  if (dom.vmEn) dom.vmEn.textContent = item.en;
-  if (dom.vmSummary) dom.vmSummary.textContent = item.summary;
-  if (dom.vmMechanism) dom.vmMechanism.textContent = item.mechanism;
-  if (dom.vmObserve) dom.vmObserve.textContent = item.observe;
-  if (dom.vmTags) {
-    dom.vmTags.replaceChildren(...item.tags.map((tag) => make('span', undefined, tag)));
-  }
-  if (dom.vmLinks) {
-    dom.vmLinks.replaceChildren();
-    for (const [label, href] of item.links ?? []) {
-      const link = make('a', undefined, `${label} →`);
-      link.href = href;
-      dom.vmLinks.appendChild(link);
+  dom.vmIndex.textContent = `${index >= 0 ? index + 1 : '—'} / ${visible.length || entries.length}`;
+  dom.vmTitle.textContent = item.title;
+  dom.vmEn.textContent = item.en;
+  dom.vmSummary.textContent = item.summary;
+  dom.vmMechanism.textContent = item.mechanism;
+  dom.vmObserve.textContent = item.observe;
+  dom.vmTags.replaceChildren(...item.tags.map((tag) => make('span', undefined, tag)));
+  dom.vmLinks.replaceChildren();
+  for (const [label, href] of item.links ?? []) {
+    const target = visualLink(href);
+    const link = make('a', undefined, `${label} →`);
+    link.href = target.href;
+    if (target.id && entryById.has(target.id)) {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        openEntry(target.id as string);
+      });
     }
-    if (!(item.links?.length)) {
-      dom.vmLinks.appendChild(make('span', 'vm-no-link', '本页视觉笔记 · 无外部实验'));
-    }
+    dom.vmLinks.appendChild(link);
   }
-  if (dom.vmPrev) dom.vmPrev.disabled = index <= 0;
-  if (dom.vmNext) dom.vmNext.disabled = index < 0 || index >= visible.length - 1;
-  if (dom.vmCopy) dom.vmCopy.textContent = '复制链接';
+  if (!(item.links?.length)) dom.vmLinks.appendChild(make('span', 'vm-no-link', '本页动态演示 · 无外部实验'));
+  dom.vmPrev.disabled = index <= 0;
+  dom.vmNext.disabled = index < 0 || index >= visible.length - 1;
+  dom.vmCopy.textContent = '复制链接';
   dom.modal.hidden = false;
   document.body.classList.add('is-modal-open');
-  if (options.focus !== false) dom.vmClose?.focus();
+  if (options.focus !== false) dom.vmClose.focus();
+  modalPlayer = createVisualPlayer(svg, item.visual, {
+    host: dom.vmVisual,
+    auto: true,
+    progressive: false,
+    onUpdate: (step, total, label) => {
+      dom.vmAnimLabel.textContent = `${step + 1} / ${total} · ${label}`;
+      dom.vmPlay.textContent = '暂停';
+    },
+  });
   if (options.push !== false) {
     const nextHash = `#${item.id}`;
     if (window.location.hash !== nextHash) history.pushState({ id: item.id }, '', nextHash);
@@ -248,8 +293,9 @@ function openEntry(id: string, options: { push?: boolean; focus?: boolean } = {}
 }
 
 function closeEntry(options: { push?: boolean } = {}): void {
-  if (!dom.modal) return;
   if (dom.modal.hidden) return;
+  modalPlayer?.destroy();
+  modalPlayer = null;
   dom.modal.hidden = true;
   document.body.classList.remove('is-modal-open');
   activeEntry = null;
@@ -267,19 +313,14 @@ function moveEntry(direction: -1 | 1): void {
 }
 
 function copyCurrentLink(): void {
-  if (!activeEntry || !dom.vmCopy) return;
+  if (!activeEntry) return;
   const url = `${window.location.origin}${window.location.pathname}#${activeEntry.id}`;
   const done = () => {
-    if (!dom.vmCopy) return;
     dom.vmCopy.textContent = '已复制';
-    window.setTimeout(() => {
-      if (dom.vmCopy) dom.vmCopy.textContent = '复制链接';
-    }, 1400);
+    window.setTimeout(() => { dom.vmCopy.textContent = '复制链接'; }, 1400);
   };
   if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(url).then(done).catch(() => {
-      window.prompt('复制链接', url);
-    });
+    navigator.clipboard.writeText(url).then(done).catch(() => window.prompt('复制链接', url));
   } else {
     window.prompt('复制链接', url);
   }
@@ -298,7 +339,7 @@ function syncFromHash(): void {
       state.domain = 'all';
       state.level = 'all';
       state.query = '';
-      if (dom.search) dom.search.value = '';
+      dom.search.value = '';
       for (const button of document.querySelectorAll<HTMLButtonElement>('.domain-filter')) {
         button.setAttribute('aria-pressed', String(button.dataset.domain === 'all'));
       }
@@ -314,8 +355,8 @@ function syncFromHash(): void {
 buildFilters();
 updateVisible();
 
-dom.search?.addEventListener('input', () => {
-  state.query = normalize(dom.search?.value ?? '');
+dom.search.addEventListener('input', () => {
+  state.query = normalize(dom.search.value);
   updateVisible();
 });
 for (const button of dom.levels) {
@@ -324,29 +365,42 @@ for (const button of dom.levels) {
     selectLevel(level);
   });
 }
-dom.random?.addEventListener('click', randomEntry);
-dom.vmClose?.addEventListener('click', () => closeEntry());
-dom.modal?.addEventListener('click', (event) => {
+dom.random.addEventListener('click', randomEntry);
+dom.vmClose.addEventListener('click', () => closeEntry());
+dom.modal.addEventListener('click', (event) => {
   if (event.target === dom.modal) closeEntry();
 });
-dom.vmPrev?.addEventListener('click', () => moveEntry(-1));
-dom.vmNext?.addEventListener('click', () => moveEntry(1));
-dom.vmCopy?.addEventListener('click', copyCurrentLink);
+dom.vmPrev.addEventListener('click', () => moveEntry(-1));
+dom.vmNext.addEventListener('click', () => moveEntry(1));
+dom.vmCopy.addEventListener('click', copyCurrentLink);
+dom.vmPlay.addEventListener('click', () => {
+  const playing = modalPlayer?.toggle() ?? false;
+  dom.vmPlay.textContent = playing ? '暂停' : '播放';
+});
+dom.vmStep.addEventListener('click', () => {
+  modalPlayer?.next();
+  dom.vmPlay.textContent = '播放';
+});
+dom.vmReset.addEventListener('click', () => {
+  modalPlayer?.reset();
+  dom.vmPlay.textContent = '播放';
+});
 
 window.addEventListener('popstate', syncFromHash);
+window.addEventListener('hashchange', syncFromHash);
 window.addEventListener('keydown', (event) => {
   const target = event.target as HTMLElement | null;
   const typing = target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable;
-  if (event.key === 'Escape') {
-    if (dom.modal && !dom.modal.hidden) closeEntry();
+  if (event.key === 'Escape' && !dom.modal.hidden) {
+    closeEntry();
     return;
   }
   if (event.key === '/' && !typing) {
     event.preventDefault();
-    dom.search?.focus();
+    dom.search.focus();
     return;
   }
-  if (!dom.modal?.hidden) {
+  if (!dom.modal.hidden) {
     if (event.key === 'ArrowLeft') moveEntry(-1);
     if (event.key === 'ArrowRight') moveEntry(1);
   }

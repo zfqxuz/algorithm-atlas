@@ -39,7 +39,7 @@ sudo ufw allow 9000/tcp comment 'algorithm atlas'
 ├── nginx.conf
 └── site/
     ├── index.html
-    ├── visuals.html
+    ├── visuals.html            # 兼容重定向到 index.html#cs-atlas
     ├── optimization-lab.html
     ├── transformer-lab.html
     ├── memory-lab.html
