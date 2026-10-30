@@ -23,7 +23,7 @@ pnpm run preview
 1. Add an `Entry` to `src/visuals/data/` using one of the typed visual specs.
 2. Pick an existing renderer (`bars`, `matrix`, `chart`, `graph`, `tree`, `pipeline`, `layers`, `timeline`, `memory`, `table`, `stack`, `vector`, `topology`) or extend `src/visuals/render.ts`.
 3. Keep `id` unique, use a level `L1`–`L4`, and make `mechanism` / `observe` explain what the learner should look at.
-4. Run `npm test` and `npm run build`.
+4. Run `pnpm test` and `pnpm run build`.
 
 ## Adding an interactive lab
 
