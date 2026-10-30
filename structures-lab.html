@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="交互式数据结构实验室：二叉搜索树、二叉堆、并查集、AVL 树与红黑树。可调整初始键集、值域、随机种子，并播放插入与查找轨迹。">
+  <meta name="theme-color" content="#f7f4ed">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>数据结构实验室 · 寻径算法图谱</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="atlas.css">
+  <link rel="stylesheet" href="claude.css">
+</head>
+<body class="lab-page structures-lab">
+  <div class="ambient" aria-hidden="true"></div>
+
+  <div class="app-shell lab-shell">
+    <header class="topbar lab-topbar">
+      <a class="brand" href="index.html" aria-label="返回算法图谱">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M7.5 23.5 12.8 10.2l6.1 8.2L24.8 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="7.5" cy="23.5" r="3.1" fill="#07100e" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="12.8" cy="10.2" r="2.3" fill="currentColor"/>
+            <circle cx="18.9" cy="18.4" r="2.3" fill="currentColor"/>
+            <circle cx="24.8" cy="6.5" r="3.1" fill="#07100e" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <span class="brand-name">寻径</span>
+          <span class="brand-sub">ALGORITHM ATLAS</span>
+        </span>
+      </a>
+      <div class="topbar-meta lab-topbar-meta">
+        <nav class="lab-breadcrumb" aria-label="面包屑导航">
+          <a href="index.html">算法图谱</a>
+          <span class="crumb-sep">/</span>
+          <strong>数据结构实验室</strong>
+        </nav>
+        <span class="global-status" data-tone="idle">
+          <span class="status-beacon" aria-hidden="true"></span>
+          <span>数据可调</span>
+        </span>
+      </div>
+    </header>
+
+    <main class="lab-main">
+      <header class="lab-masthead">
+        <div>
+          <div class="eyebrow-line">
+            <span class="eyebrow">DATA STRUCTURES</span>
+            <span class="eyebrow-separator" aria-hidden="true"></span>
+            <span class="graph-meta">5 STRUCTURES · L1–L3</span>
+          </div>
+          <h1>数据结构<em>实验台</em></h1>
+          <p>从 BST 的分叉，到 AVL 的旋转、红黑树的染色，再到堆序与并查集。每一步操作都在维护某种不变量。</p>
+        </div>
+        <div class="lab-masthead-meta">
+          <span class="lab-pill">树 / 堆 / 并查集</span>
+          <span class="lab-pill">插入 · 查找 · 合并</span>
+          <span class="lab-pill is-l2">参数可调</span>
+        </div>
+      </header>
+
+      <nav class="lab-entries" id="structTabs" aria-label="选择数据结构"></nav>
+
+      <div class="lab-layout">
+        <div class="lab-primary">
+          <section class="lab-panel struct-stage-panel" aria-labelledby="structStageTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow" id="structStageEyebrow">DATA STRUCTURE</span>
+                <h2 id="structStageTitle">结构舞台</h2>
+              </div>
+              <div class="sort-stage-badges">
+                <span class="atlas-level-badge level-l1" id="structLevelBadge">L1</span>
+                <span class="lab-pill" id="structAlgorithmLabel">BST</span>
+              </div>
+            </header>
+            <div class="struct-stage-wrap">
+              <div class="adv-stage-meta">
+                <span id="structMessage">准备开始</span>
+                <span id="structDataLabel"></span>
+              </div>
+              <div class="struct-stage" id="structStage"></div>
+            </div>
+            <footer class="struct-controls">
+              <div class="lab-transport">
+                <button class="button button-primary sort-play-button" id="structPlayBtn" type="button" aria-label="播放操作轨迹">
+                  <svg class="icon-play" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <path d="M5.7 3.9c0-.7.8-1.1 1.4-.7l7 4.7c.6.4.6 1.2 0 1.6l-7 4.7c-.6.4-1.4 0-1.4-.7V3.9Z" fill="currentColor"/>
+                  </svg>
+                  <svg class="icon-pause" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <rect x="4.5" y="3.5" width="3" height="11" rx="1" fill="currentColor"/>
+                    <rect x="10.5" y="3.5" width="3" height="11" rx="1" fill="currentColor"/>
+                  </svg>
+                  <span id="structPlayLabel">播放</span>
+                </button>
+                <button class="button button-secondary" id="structStepBtn" type="button">单步</button>
+                <button class="button button-icon" id="structResetBtn" type="button" aria-label="回到操作起点" title="回到操作起点">
+                  <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <path d="M4 6.5a6 6 0 1 1-.3 4.2M4 2.8v4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="struct-progress-wrap">
+                <div class="sort-progress-copy">
+                  <span id="structStepLabel">等待操作</span>
+                  <span id="structProgressValue">0%</span>
+                </div>
+                <div class="lab-progress" role="progressbar" aria-label="操作轨迹进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="structProgressTrack">
+                  <span id="structProgressFill"></span>
+                </div>
+              </div>
+              <span class="event-chip" id="structRunState" data-kind="init">READY</span>
+            </footer>
+          </section>
+
+          <section class="lab-panel" aria-labelledby="structCodeTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">PSEUDOCODE &amp; INVARIANTS</span>
+                <h2 id="structCodeTitle">结构骨架</h2>
+              </div>
+              <span class="lab-pill" id="structCodeAlgorithm">BST</span>
+            </header>
+            <div class="lab-panel-body adv-code-body">
+              <div class="lab-code-block" id="structPseudoCode" aria-label="当前数据结构伪代码"></div>
+              <aside class="adv-code-aside">
+                <div class="sort-note">
+                  <span class="eyebrow">CORE INVARIANT</span>
+                  <p id="structInvariantText">—</p>
+                </div>
+                <div class="sort-facts">
+                  <div><span>时间复杂度</span><strong id="structTime">—</strong></div>
+                  <div><span>空间复杂度</span><strong id="structSpace">—</strong></div>
+                  <div><span>难度层级</span><strong id="structLevelText">—</strong></div>
+                  <div><span>当前阶段</span><strong id="structPhase">—</strong></div>
+                </div>
+                <p class="lab-visual-note" id="structInsight"></p>
+              </aside>
+            </div>
+          </section>
+        </div>
+
+        <aside class="lab-sidebar">
+          <section class="lab-panel" aria-labelledby="structOpTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">OPERATIONS</span>
+                <h2 id="structOpTitle">操作</h2>
+              </div>
+              <span class="lab-pill" id="structOpKind">READY</span>
+            </header>
+            <div class="lab-panel-body">
+              <div id="structOpPanel"></div>
+              <p class="lab-visual-note" id="structOpHint"></p>
+            </div>
+          </section>
+
+          <section class="lab-panel" aria-labelledby="structDataTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">DATA GENERATOR</span>
+                <h2 id="structDataTitle">初始数据</h2>
+              </div>
+              <span class="lab-pill" id="structSeedBadge">seed 2026</span>
+            </header>
+            <div class="lab-panel-body">
+              <div class="lab-param-grid" id="structParamForm"></div>
+              <div class="lab-actions">
+                <button class="button button-primary" id="structGenerateBtn" type="button">生成初始结构</button>
+                <button class="button button-secondary" id="structRandomSeedBtn" type="button">换种子</button>
+              </div>
+              <div class="lab-actions struct-clear-row">
+                <button class="button button-quiet" id="structClearBtn" type="button">清空结构</button>
+              </div>
+              <p class="lab-description" id="structDataSummary"></p>
+              <div class="lab-alert" id="structDataHint">调整参数后点击“生成初始结构”；操作动画不会改变测试数据。</div>
+            </div>
+          </section>
+
+          <section class="lab-panel" aria-labelledby="structStatsTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">LIVE STATE</span>
+                <h2 id="structStatsTitle">结构状态</h2>
+              </div>
+              <span class="event-chip" id="structStateChip" data-kind="init">LIVE</span>
+            </header>
+            <div class="lab-panel-body">
+              <div class="struct-metrics" id="structMetrics"></div>
+              <div class="struct-invariant-status" id="structInvariantStatus">
+                <span class="invariant-dot" aria-hidden="true"></span>
+                <span id="structInvariantStatusText">等待数据结构</span>
+              </div>
+              <p class="lab-message" id="structMetricNote"></p>
+            </div>
+          </section>
+
+          <section class="lab-panel" aria-labelledby="structProfileTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">STRUCTURE PROFILE</span>
+                <h2 id="structProfileTitle">结构档案</h2>
+              </div>
+              <span class="atlas-level-badge level-l1" id="structProfileLevel">L1</span>
+            </header>
+            <div class="lab-panel-body">
+              <p class="lab-description" id="structDescription">—</p>
+              <div class="sort-profile-tags" id="structProfileTags"></div>
+              <p class="lab-visual-note">本实验聚焦插入与查找/合并的主路径；删除操作可在相同框架上继续扩展。</p>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="page-footer atlas-footer">
+      <span>DATA STRUCTURE LAB / ALGORITHM ATLAS</span>
+      <span class="footer-dot" aria-hidden="true"></span>
+      <span>每一步操作，都在维护不变量。</span>
+      <span class="atlas-footer-note">本地运行 · 无外部依赖</span>
+    </footer>
+  </div>
+
+  <script src="engines/tree-engine.js"></script>
+  <script src="lab-core.js"></script>
+  <script src="structures-lab.js"></script>
+</body>
+</html>

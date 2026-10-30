@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="进阶算法实验室：LCS 动态规划、KMP 字符串匹配、Andrew 凸包与 PageRank。支持调整字符串、点集、图与迭代参数。">
+  <meta name="theme-color" content="#f7f4ed">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>进阶算法实验室 · 寻径算法图谱</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="atlas.css">
+  <link rel="stylesheet" href="claude.css">
+</head>
+<body class="lab-page advanced-lab">
+  <div class="ambient" aria-hidden="true"></div>
+
+  <div class="app-shell lab-shell">
+    <header class="topbar lab-topbar">
+      <a class="brand" href="index.html" aria-label="返回算法图谱">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M7.5 23.5 12.8 10.2l6.1 8.2L24.8 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="7.5" cy="23.5" r="3.1" fill="#07100e" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="12.8" cy="10.2" r="2.3" fill="currentColor"/>
+            <circle cx="18.9" cy="18.4" r="2.3" fill="currentColor"/>
+            <circle cx="24.8" cy="6.5" r="3.1" fill="#07100e" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <span class="brand-name">寻径</span>
+          <span class="brand-sub">ALGORITHM ATLAS</span>
+        </span>
+      </a>
+      <div class="topbar-meta lab-topbar-meta">
+        <nav class="lab-breadcrumb" aria-label="面包屑导航">
+          <a href="index.html">算法图谱</a>
+          <span class="crumb-sep">/</span>
+          <strong>进阶算法实验室</strong>
+        </nav>
+        <span class="global-status" data-tone="idle">
+          <span class="status-beacon" aria-hidden="true"></span>
+          <span>数据可调</span>
+        </span>
+      </div>
+    </header>
+
+    <main class="lab-main">
+      <header class="lab-masthead">
+        <div>
+          <div class="eyebrow-line">
+            <span class="eyebrow">PARADIGMS &amp; ADVANCED</span>
+            <span class="eyebrow-separator" aria-hidden="true"></span>
+            <span class="graph-meta">4 TOPICS · L2–L4</span>
+          </div>
+          <h1>进阶<em>实验台</em></h1>
+          <p>动态规划、字符串、计算几何与网络排名。把一张表、一条前缀、一组点和一张有向图变成可播放的状态。</p>
+        </div>
+        <div class="lab-masthead-meta">
+          <span class="lab-pill">DP / 字符串 / 几何 / 矩阵</span>
+          <span class="lab-pill">可播放 · 可单步</span>
+          <span class="lab-pill is-l4">参数可调</span>
+        </div>
+      </header>
+
+      <nav class="lab-entries" id="advTabs" aria-label="选择进阶算法"></nav>
+
+      <div class="lab-layout">
+        <div class="lab-primary">
+          <section class="lab-panel adv-stage-panel" aria-labelledby="advStageTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow" id="advStageEyebrow">VISUALIZATION</span>
+                <h2 id="advStageTitle">算法舞台</h2>
+              </div>
+              <div class="sort-stage-badges">
+                <span class="atlas-level-badge level-l2" id="advLevelBadge">L2</span>
+                <span class="lab-pill" id="advComplexityBadge">—</span>
+              </div>
+            </header>
+            <div class="adv-stage-wrap">
+              <div class="adv-stage-meta">
+                <span id="advMessage">准备开始</span>
+                <span id="advDataLabel"></span>
+              </div>
+              <div class="adv-stage" id="advStage"></div>
+            </div>
+            <footer class="sort-controls advanced-controls">
+              <div class="lab-transport">
+                <button class="button button-primary sort-play-button" id="advPlayBtn" type="button" aria-label="开始播放">
+                  <svg class="icon-play" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <path d="M5.7 3.9c0-.7.8-1.1 1.4-.7l7 4.7c.6.4.6 1.2 0 1.6l-7 4.7c-.6.4-1.4 0-1.4-.7V3.9Z" fill="currentColor"/>
+                  </svg>
+                  <svg class="icon-pause" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <rect x="4.5" y="3.5" width="3" height="11" rx="1" fill="currentColor"/>
+                    <rect x="10.5" y="3.5" width="3" height="11" rx="1" fill="currentColor"/>
+                  </svg>
+                  <span id="advPlayLabel">播放</span>
+                </button>
+                <button class="button button-secondary" id="advStepBtn" type="button">单步</button>
+                <button class="button button-icon" id="advResetBtn" type="button" aria-label="重置动画" title="重置动画">
+                  <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <path d="M4 6.5a6 6 0 1 1-.3 4.2M4 2.8v4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="sort-progress-wrap">
+                <div class="sort-progress-copy">
+                  <span id="advStepLabel">步骤 0 / 0</span>
+                  <span id="advProgressValue">0%</span>
+                </div>
+                <div class="lab-progress" role="progressbar" aria-label="进阶算法动画进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="advProgressTrack">
+                  <span id="advProgressFill"></span>
+                </div>
+              </div>
+              <label class="sort-speed">
+                <span>速度</span>
+                <input type="range" id="advSpeed" min="0.5" max="8" step="0.5" value="1" aria-label="动画速度">
+                <strong id="advSpeedValue">1×</strong>
+              </label>
+            </footer>
+          </section>
+
+          <section class="lab-panel" aria-labelledby="advCodeTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">PSEUDOCODE &amp; IDEA</span>
+                <h2 id="advCodeTitle">算法骨架</h2>
+              </div>
+              <span class="lab-pill" id="advCodeAlgorithm">—</span>
+            </header>
+            <div class="lab-panel-body adv-code-body">
+              <div class="lab-code-block" id="advPseudoCode" aria-label="当前算法伪代码"></div>
+              <aside class="adv-code-aside">
+                <div class="sort-note">
+                  <span class="eyebrow">CORE IDEA</span>
+                  <p id="advCoreIdea">—</p>
+                </div>
+                <div class="sort-facts">
+                  <div><span>时间复杂度</span><strong id="advTime">—</strong></div>
+                  <div><span>空间复杂度</span><strong id="advSpace">—</strong></div>
+                  <div><span>难度层级</span><strong id="advLevelText">—</strong></div>
+                  <div><span>当前状态</span><strong id="advPhase">—</strong></div>
+                </div>
+                <p class="lab-visual-note" id="advInsight"></p>
+              </aside>
+            </div>
+          </section>
+        </div>
+
+        <aside class="lab-sidebar">
+          <section class="lab-panel" aria-labelledby="advParamsTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">DATA GENERATOR</span>
+                <h2 id="advParamsTitle">测试数据</h2>
+              </div>
+              <span class="lab-pill" id="advSeedBadge">seed 2026</span>
+            </header>
+            <div class="lab-panel-body">
+              <div class="lab-param-grid" id="advParamForm"></div>
+              <div class="lab-actions">
+                <button class="button button-primary" id="advGenerateBtn" type="button">生成新数据</button>
+                <button class="button button-secondary" id="advRandomSeedBtn" type="button">换种子</button>
+              </div>
+              <p class="lab-description adv-param-summary" id="advParamSummary"></p>
+              <div class="lab-alert" id="advParamHint">调整参数后点击“生成新数据”，动画会从初始状态重新开始。</div>
+            </div>
+          </section>
+
+          <section class="lab-panel" aria-labelledby="advStatsTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">LIVE METRICS</span>
+                <h2 id="advStatsTitle">运行统计</h2>
+              </div>
+              <span class="event-chip" id="advRunState" data-kind="init">READY</span>
+            </header>
+            <div class="lab-panel-body">
+              <div class="adv-metrics" id="advMetrics"></div>
+              <p class="lab-message" id="advMetricNote">选择一种算法，然后播放或单步推进。</p>
+            </div>
+          </section>
+
+          <section class="lab-panel" aria-labelledby="advProfileTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">ALGORITHM PROFILE</span>
+                <h2 id="advProfileTitle">算法档案</h2>
+              </div>
+              <span class="atlas-level-badge level-l2" id="advProfileLevel">L2</span>
+            </header>
+            <div class="lab-panel-body">
+              <p class="lab-description" id="advDescription">—</p>
+              <div class="sort-profile-tags" id="advProfileTags"></div>
+              <p class="lab-visual-note" id="advProfileNote"></p>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="page-footer atlas-footer">
+      <span>ADVANCED LAB / ALGORITHM ATLAS</span>
+      <span class="footer-dot" aria-hidden="true"></span>
+      <span>从一个状态，走到可证明的答案。</span>
+      <span class="atlas-footer-note">本地运行 · 无外部依赖</span>
+    </footer>
+  </div>
+
+  <script src="engines/advanced-engine.js"></script>
+  <script src="lab-core.js"></script>
+  <script src="advanced-lab.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="内存实验台：逐步观察 FIFO、LRU 与 OPT 页面置换的帧状态、命中、缺页与淘汰决策。">
+  <meta name="theme-color" content="#f7f4ed">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>内存实验台 · 寻径算法图谱</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="atlas.css">
+  <link rel="stylesheet" href="claude.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body class="lab-page">
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="app-shell lab-shell">
+    <header class="topbar lab-topbar">
+      <a class="brand" href="index.html" aria-label="返回算法图谱">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M7.5 23.5 12.8 10.2l6.1 8.2L24.8 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="7.5" cy="23.5" r="3.1" fill="#f7f4ed" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="12.8" cy="10.2" r="2.3" fill="currentColor"/>
+            <circle cx="18.9" cy="18.4" r="2.3" fill="currentColor"/>
+            <circle cx="24.8" cy="6.5" r="3.1" fill="#f7f4ed" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="brand-copy"><span class="brand-name">寻径</span><span class="brand-sub">ALGORITHM ATLAS</span></span>
+      </a>
+      <div class="topbar-meta lab-topbar-meta">
+        <nav class="lab-breadcrumb" aria-label="面包屑导航">
+          <a href="index.html">算法图谱</a><span class="crumb-sep">/</span>
+          <a href="visuals.html">可视化百科</a><span class="crumb-sep">/</span>
+          <strong>内存实验台</strong>
+        </nav>
+        <span class="global-status" data-tone="idle"><span class="status-beacon" aria-hidden="true"></span><span>OPERATING SYSTEM · L2</span></span>
+      </div>
+    </header>
+
+    <main class="lab-main">
+      <header class="lab-masthead">
+        <div class="lab-masthead-copy">
+          <div class="eyebrow-line"><span class="eyebrow">VIRTUAL MEMORY / PAGE REPLACEMENT</span><span class="eyebrow-separator" aria-hidden="true"></span><span class="graph-meta">FIFO · LRU · OPT</span></div>
+          <h1>内存<em>实验台</em></h1>
+          <p>物理内存只有几个帧，引用串却不断到来。每一步都要决定：命中、装入新页，还是淘汰旧页？换一种置换策略，缺页次数可能完全不同。</p>
+        </div>
+        <div class="lab-masthead-meta">
+          <span class="lab-pill is-l2">Page Replacement</span>
+          <span class="lab-pill">帧 2–6</span>
+          <span class="lab-pill">可播放 · 可单步</span>
+          <span class="lab-pill">参数可调</span>
+        </div>
+      </header>
+
+      <div class="lab-layout">
+        <div class="lab-primary">
+          <section class="lab-panel">
+            <div class="lab-panel-head">
+              <div><span class="eyebrow">MEMORY STATE</span><h2>帧与引用串</h2></div>
+              <span class="lab-pill" id="memState">READY</span>
+            </div>
+            <div class="lab-panel-body">
+              <p class="lab-description">橙色高亮是当前引用；命中不会改变帧，缺页会装入或淘汰一个页。</p>
+              <div class="mem-stage">
+                <div class="mem-frames" id="memFrames"></div>
+                <div class="mem-refs-wrap"><div class="mem-refs" id="memRefs"></div></div>
+              </div>
+              <div class="mem-legend">
+                <span><i class="is-hit"></i>命中</span>
+                <span><i class="is-fault"></i>缺页</span>
+                <span><i class="is-current"></i>当前引用</span>
+                <span class="mem-note">帧状态是当前时刻的快照</span>
+              </div>
+            </div>
+            <div class="lab-panel-foot"><span id="memStatusText">选择策略后开始。</span></div>
+          </section>
+
+          <section class="lab-panel">
+            <div class="lab-panel-head"><div><span class="eyebrow">THE RULE</span><h2>置换策略</h2></div><span class="lab-pill" id="memAlgoBadge">FIFO</span></div>
+            <div class="lab-panel-body">
+              <pre class="lab-code-block" id="memCode"></pre>
+              <div class="opt-explain">
+                <p><strong>FIFO：</strong>淘汰最早进入内存的页。实现最简单，但可能出现 Belady 异常：增加帧数反而缺页更多。</p>
+                <p><strong>LRU：</strong>淘汰最久未使用的页。利用时间局部性，通常比 FIFO 好，但需要维护访问顺序。</p>
+                <p><strong>OPT：</strong>淘汰未来最晚才会再被使用的页。它是理论下界，需要预知未来，不能在线实现。</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="lab-sidebar">
+          <section class="lab-panel">
+            <div class="lab-panel-head"><div><span class="eyebrow">CONTROLS</span><h2>实验参数</h2></div></div>
+            <div class="lab-panel-body">
+              <label class="lab-param">置换策略
+                <select id="memAlgorithm">
+                  <option value="fifo">FIFO</option>
+                  <option value="lru">LRU</option>
+                  <option value="opt">OPT（离线）</option>
+                </select>
+              </label>
+              <label class="lab-param">帧数 <strong id="memFramesValue">3</strong>
+                <input id="memFrameCount" type="range" min="2" max="6" step="1" value="3">
+              </label>
+              <label class="lab-param">引用串长度 <strong id="memLengthValue">20</strong>
+                <input id="memLength" type="range" min="12" max="28" step="1" value="20">
+              </label>
+              <label class="lab-param">随机种子
+                <input id="memSeed" type="number" min="1" max="999999" value="2026">
+              </label>
+              <div class="lab-actions">
+                <button class="button button-primary" id="memPlay" type="button">播放</button>
+                <button class="button button-secondary" id="memStep" type="button">单步</button>
+                <button class="button button-quiet" id="memReset" type="button">重置</button>
+              </div>
+              <button class="button button-quiet mem-new" id="memNew" type="button">生成新引用串</button>
+            </div>
+          </section>
+
+          <section class="lab-panel">
+            <div class="lab-panel-head"><div><span class="eyebrow">LIVE METRICS</span><h2>缺页统计</h2></div></div>
+            <div class="lab-panel-body">
+              <div class="mem-metrics">
+                <div class="mem-metric"><span>缺页</span><strong id="memFaults">0</strong></div>
+                <div class="mem-metric"><span>命中</span><strong id="memHits">0</strong></div>
+                <div class="mem-metric"><span>命中率</span><strong id="memRate">—</strong></div>
+                <div class="mem-metric"><span>当前页</span><strong id="memCurrent">—</strong></div>
+              </div>
+              <p class="research-note" id="memInsight">先跑 FIFO，再切到 LRU 与 OPT 比较缺页次数。</p>
+            </div>
+          </section>
+
+          <section class="lab-panel">
+            <div class="lab-panel-head"><div><span class="eyebrow">CONTINUE READING</span><h2>延伸到内存层次</h2></div></div>
+            <div class="lab-panel-body">
+              <div class="lab-links">
+                <a href="visuals.html#paging">分页与地址翻译 →</a>
+                <a href="visuals.html#tlb">TLB →</a>
+                <a href="visuals.html#page-replacement">页面置换视觉笔记 →</a>
+                <a href="visuals.html#cache-hierarchy">缓存层次 →</a>
+                <a href="visuals.html#cache-mapping">组相联缓存 →</a>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="page-footer"><span>寻径 / MEMORY LAB</span><span class="footer-dot"></span><span>引用串由带种子的 PRNG 生成，可复现。</span></footer>
+  </div>
+  <script type="module" src="/src/labs/memory.ts"></script>
+</body>
+</html>

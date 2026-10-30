@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="交互式 CPU 调度实验室：FCFS、SJF、优先级、时间片轮转、EDF 与多机 LPT。可调作业数、到达窗口、执行时间、截止期、时间片与机器数。">
+  <meta name="theme-color" content="#f7f4ed">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>调度实验室 · 寻径算法图谱</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="atlas.css">
+  <link rel="stylesheet" href="claude.css">
+</head>
+<body class="lab-page scheduling-lab">
+  <div class="ambient" aria-hidden="true"></div>
+
+  <div class="app-shell lab-shell">
+    <header class="topbar lab-topbar">
+      <a class="brand" href="index.html" aria-label="返回算法图谱">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M7.5 23.5 12.8 10.2l6.1 8.2L24.8 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="7.5" cy="23.5" r="3.1" fill="#07100e" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="12.8" cy="10.2" r="2.3" fill="currentColor"/>
+            <circle cx="18.9" cy="18.4" r="2.3" fill="currentColor"/>
+            <circle cx="24.8" cy="6.5" r="3.1" fill="#07100e" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <span class="brand-name">寻径</span>
+          <span class="brand-sub">ALGORITHM ATLAS</span>
+        </span>
+      </a>
+      <div class="topbar-meta lab-topbar-meta">
+        <nav class="lab-breadcrumb" aria-label="面包屑导航">
+          <a href="index.html">算法图谱</a>
+          <span class="crumb-sep">/</span>
+          <strong>调度实验室</strong>
+        </nav>
+        <span class="global-status" data-tone="idle">
+          <span class="status-beacon" aria-hidden="true"></span>
+          <span>数据可调</span>
+        </span>
+      </div>
+    </header>
+
+    <main class="lab-main">
+      <header class="lab-masthead">
+        <div>
+          <div class="eyebrow-line">
+            <span class="eyebrow">SCHEDULING &amp; RESOURCE ALLOCATION</span>
+            <span class="eyebrow-separator" aria-hidden="true"></span>
+            <span class="graph-meta">6 POLICIES · L1–L4</span>
+          </div>
+          <h1>调度<em>实验台</em></h1>
+          <p>同一批作业，不同的公平与效率取舍。比较等待时间、周转时间、截止期延迟与多机完工时间。</p>
+        </div>
+        <div class="lab-masthead-meta">
+          <span class="lab-pill">抢占 / 非抢占</span>
+          <span class="lab-pill">单机 / 多机</span>
+          <span class="lab-pill is-l3">作业参数可调</span>
+        </div>
+      </header>
+
+      <nav class="lab-entries" id="scheduleTabs" aria-label="选择调度算法"></nav>
+
+      <div class="lab-layout">
+        <div class="lab-primary">
+          <section class="lab-panel gantt-panel" aria-labelledby="ganttTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">TIMELINE</span>
+                <h2 id="ganttTitle">调度甘特图</h2>
+              </div>
+              <div class="gantt-head-meta">
+                <span class="atlas-level-badge level-l1" id="scheduleLevelBadge">L1</span>
+                <span class="lab-pill" id="scheduleAlgorithmLabel">FCFS</span>
+              </div>
+            </header>
+            <div class="lab-panel-body">
+              <div class="gantt-context">
+                <span id="scheduleMessage">正在生成作业…</span>
+                <span id="scheduleTimeRange">0 → 0</span>
+              </div>
+              <div class="gantt-scroll">
+                <div class="gantt-chart" id="ganttChart" role="img" aria-label="调度甘特图">
+                  <div class="gantt-axis">
+                    <span class="gantt-row-spacer"></span>
+                    <div class="gantt-ticks" id="ganttTicks"></div>
+                  </div>
+                  <div class="gantt-rows" id="ganttRows"></div>
+                </div>
+                <div class="lab-empty" id="ganttEmpty" hidden>生成作业后显示排程。</div>
+              </div>
+              <div class="gantt-legend" id="ganttLegend"></div>
+            </div>
+            <footer class="lab-panel-foot gantt-foot">
+              <span><span class="kbd">T</span> 时间单位 · 每个作业一种颜色</span>
+              <span id="scheduleFootnote">参数改变后自动重新计算。</span>
+            </footer>
+          </section>
+
+          <div class="lab-bottom-grid schedule-bottom">
+            <section class="lab-panel" aria-labelledby="scheduleRuleTitle">
+              <header class="lab-panel-head">
+                <div>
+                  <span class="eyebrow">SCHEDULING RULE</span>
+                  <h2 id="scheduleRuleTitle">调度规则</h2>
+                </div>
+                <span class="lab-pill" id="scheduleRuleBadge">FCFS</span>
+              </header>
+              <div class="lab-panel-body">
+                <div class="lab-code-block" id="scheduleRuleCode"></div>
+                <p class="lab-visual-note" id="scheduleRuleNote"></p>
+              </div>
+            </section>
+
+            <section class="lab-panel" aria-labelledby="comparisonTitle">
+              <header class="lab-panel-head">
+                <div>
+                  <span class="eyebrow">COMPARE</span>
+                  <h2 id="comparisonTitle">横向对比</h2>
+                </div>
+              </header>
+              <div class="lab-panel-body">
+                <div class="comparison-table-wrap">
+                  <table class="comparison-table">
+                    <thead>
+                      <tr><th>算法</th><th>等待</th><th>周转</th><th>最大延迟</th><th>完工</th></tr>
+                    </thead>
+                    <tbody id="comparisonRows"></tbody>
+                  </table>
+                </div>
+                <p class="lab-visual-note">等待、周转、延迟取作业平均值；“完工”为 makespan。LPT 使用多机、忽略到达时刻。</p>
+              </div>
+            </section>
+          </div>
+
+          <section class="lab-panel" aria-labelledby="jobTableTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">JOB SET</span>
+                <h2 id="jobTableTitle">作业与完成情况</h2>
+              </div>
+              <span class="lab-pill" id="jobCountBadge">0 个作业</span>
+            </header>
+            <div class="lab-panel-body">
+              <div class="job-grid" id="jobGrid"></div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="lab-sidebar">
+          <section class="lab-panel" aria-labelledby="scheduleDataTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">DATA GENERATOR</span>
+                <h2 id="scheduleDataTitle">作业生成</h2>
+              </div>
+              <span class="lab-pill" id="scheduleSeedBadge">seed 1</span>
+            </header>
+            <div class="lab-panel-body">
+              <div class="lab-param-grid">
+                <label class="lab-param is-wide">
+                  <span>作业数量 <strong id="scheduleCountValue">6</strong></span>
+                  <div class="lab-param-range"><input type="range" id="scheduleCount" min="3" max="12" step="1" value="6"></div>
+                </label>
+                <label class="lab-param is-wide">
+                  <span>到达窗口 <strong id="scheduleArrivalValue">10</strong></span>
+                  <div class="lab-param-range"><input type="range" id="scheduleArrival" min="0" max="20" step="1" value="10"></div>
+                </label>
+                <label class="lab-param">
+                  <span>最短执行</span>
+                  <input type="number" id="scheduleBurstMin" min="1" max="12" step="1" value="2">
+                </label>
+                <label class="lab-param">
+                  <span>最长执行</span>
+                  <input type="number" id="scheduleBurstMax" min="1" max="15" step="1" value="6">
+                </label>
+                <label class="lab-param">
+                  <span>截止期松弛下限</span>
+                  <input type="number" id="scheduleSlackMin" min="0" max="20" step="1" value="0">
+                </label>
+                <label class="lab-param">
+                  <span>截止期松弛上限</span>
+                  <input type="number" id="scheduleSlackMax" min="0" max="20" step="1" value="6">
+                </label>
+                <label class="lab-param">
+                  <span>优先级档位</span>
+                  <input type="number" id="schedulePriorities" min="2" max="5" step="1" value="3">
+                </label>
+                <label class="lab-param">
+                  <span>随机种子</span>
+                  <input type="number" id="scheduleSeed" min="1" max="99999" step="1" value="2026">
+                </label>
+              </div>
+
+              <div class="schedule-run-options">
+                <label class="lab-param">
+                  <span>时间片（RR）</span>
+                  <input type="number" id="scheduleQuantum" min="1" max="6" step="1" value="2">
+                </label>
+                <label class="lab-param">
+                  <span>机器数（LPT）</span>
+                  <input type="number" id="scheduleMachines" min="2" max="4" step="1" value="2">
+                </label>
+              </div>
+
+              <div class="lab-actions">
+                <button class="button button-primary" id="scheduleGenerateBtn" type="button">生成新作业</button>
+                <button class="button button-secondary" id="scheduleRandomSeedBtn" type="button">换种子</button>
+              </div>
+              <p class="lab-description schedule-data-summary" id="scheduleDataSummary"></p>
+              <div class="lab-alert">修改作业参数后点击“生成新作业”；时间片和机器数会立即重新排程。</div>
+            </div>
+          </section>
+
+          <section class="lab-panel" aria-labelledby="scheduleStatsTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">METRICS</span>
+                <h2 id="scheduleStatsTitle">本策略表现</h2>
+              </div>
+              <span class="event-chip" id="scheduleRunState" data-kind="init">READY</span>
+            </header>
+            <div class="lab-panel-body">
+              <div class="schedule-metrics">
+                <div class="lab-metric"><span>平均等待</span><strong id="scheduleAvgWait">0</strong></div>
+                <div class="lab-metric"><span>平均周转</span><strong id="scheduleAvgTurn">0</strong></div>
+                <div class="lab-metric"><span>最大延迟</span><strong id="scheduleMaxLateness">0</strong></div>
+                <div class="lab-metric"><span>完工时间</span><strong id="scheduleMakespan">0</strong></div>
+                <div class="lab-metric"><span>CPU 利用率</span><strong id="scheduleUtilization">0%</strong></div>
+                <div class="lab-metric"><span>总执行量</span><strong id="scheduleTotalBurst">0</strong></div>
+              </div>
+              <p class="lab-message" id="scheduleMetricNote"></p>
+            </div>
+          </section>
+
+          <section class="lab-panel" aria-labelledby="scheduleProfileTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">ALGORITHM PROFILE</span>
+                <h2 id="scheduleProfileTitle">策略档案</h2>
+              </div>
+              <span class="atlas-level-badge level-l1" id="scheduleProfileLevel">L1</span>
+            </header>
+            <div class="lab-panel-body">
+              <p class="lab-description" id="scheduleDescription">—</p>
+              <div class="schedule-profile-grid">
+                <div><span>时间复杂度</span><strong id="scheduleTime">—</strong></div>
+                <div><span>空间复杂度</span><strong id="scheduleSpace">—</strong></div>
+              </div>
+              <div class="sort-profile-tags" id="scheduleProfileTags"></div>
+              <p class="lab-visual-note">点击上方任意调度算法，立即在相同作业集上重算。</p>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="page-footer atlas-footer">
+      <span>SCHEDULING LAB / ALGORITHM ATLAS</span>
+      <span class="footer-dot" aria-hidden="true"></span>
+      <span>同一批作业，比较不同策略。</span>
+      <span class="atlas-footer-note">本地运行 · 无外部依赖</span>
+    </footer>
+  </div>
+
+  <script src="engines/scheduling-engine.js"></script>
+  <script src="lab-core.js"></script>
+  <script src="scheduling-lab.js"></script>
+</body>
+</html>

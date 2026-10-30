@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="交互式图算法可视化实验台：Dijkstra、BFS、DFS 与 Prim 的分步推演、队列和最小生成树。">
+  <meta name="theme-color" content="#f7f4ed">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>寻径 · 经典图算法可视化</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="claude.css">
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./index.html" aria-label="寻径 Dijkstra 可视化首页">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M7.5 23.5 12.8 10.2l6.1 8.2L24.8 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="7.5" cy="23.5" r="3.1" fill="#07100e" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="12.8" cy="10.2" r="2.3" fill="currentColor"/>
+            <circle cx="18.9" cy="18.4" r="2.3" fill="currentColor"/>
+            <circle cx="24.8" cy="6.5" r="3.1" fill="#07100e" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <span class="brand-name">寻径</span>
+          <span class="brand-sub">GRAPH ALGORITHM LAB</span>
+        </span>
+      </a>
+
+      <div class="topbar-meta">
+        <a class="button button-quiet lab-back-link" href="index.html">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M15.5 10h-11m4.2-4.2L4.5 10l4.2 4.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>算法图谱</span>
+        </a>
+        <span class="topbar-note" id="topbarNote">加权无向图 · 正权边</span>
+        <span class="global-status" id="globalStatus" data-tone="idle">
+          <span class="status-beacon" aria-hidden="true"></span>
+          <span id="globalStatusText">准备就绪</span>
+        </span>
+      </div>
+    </header>
+
+    <nav class="algorithm-nav" aria-label="选择图算法">
+      <div class="algorithm-nav-label">
+        <span class="eyebrow">ALGORITHM MATRIX</span>
+        <span>四种经典图算法</span>
+      </div>
+      <div class="algorithm-tabs" role="group" aria-label="经典图算法">
+        <button class="algorithm-tab is-active" type="button" data-algorithm="dijkstra" aria-pressed="true">
+          <span class="algo-index">01</span>
+          <span class="algo-tab-copy"><strong>Dijkstra</strong><small>加权最短路</small></span>
+        </button>
+        <button class="algorithm-tab" type="button" data-algorithm="bfs" aria-pressed="false">
+          <span class="algo-index">02</span>
+          <span class="algo-tab-copy"><strong>BFS</strong><small>最少边路径</small></span>
+        </button>
+        <button class="algorithm-tab" type="button" data-algorithm="dfs" aria-pressed="false">
+          <span class="algo-index">03</span>
+          <span class="algo-tab-copy"><strong>DFS</strong><small>深度优先搜索</small></span>
+        </button>
+        <button class="algorithm-tab" type="button" data-algorithm="prim" aria-pressed="false">
+          <span class="algo-index">04</span>
+          <span class="algo-tab-copy"><strong>Prim</strong><small>最小生成树</small></span>
+        </button>
+      </div>
+    </nav>
+
+    <main class="dashboard">
+      <div class="main-column">
+        <section class="panel graph-panel" aria-labelledby="pageTitle">
+          <header class="graph-header">
+            <div class="graph-heading">
+              <div class="eyebrow-line">
+                <span class="eyebrow" id="presetCode">NETWORK 01</span>
+                <span class="eyebrow-separator" aria-hidden="true"></span>
+                <span class="graph-meta" id="graphMeta">9 节点 · 16 条边</span>
+              </div>
+              <h1 id="pageTitle"><span id="algoHeading">Dijkstra</span> <em id="algoTagline">最短路径</em></h1>
+              <p id="presetBlurb">一张疏密有致的加权图，最短路并不总是节点最少的那条。</p>
+            </div>
+            <div class="graph-actions">
+              <button class="button button-quiet layout-button" id="layoutBtn" type="button" aria-label="恢复默认节点布局" title="恢复默认节点布局">
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <rect x="3" y="3" width="5" height="5" rx="1.2" stroke="currentColor" stroke-width="1.4"/>
+                  <rect x="12" y="3" width="5" height="5" rx="1.2" stroke="currentColor" stroke-width="1.4"/>
+                  <rect x="3" y="12" width="5" height="5" rx="1.2" stroke="currentColor" stroke-width="1.4"/>
+                  <rect x="12" y="12" width="5" height="5" rx="1.2" stroke="currentColor" stroke-width="1.4"/>
+                </svg>
+              </button>
+              <button class="button button-quiet generate-button" id="generateGraphBtn" type="button">
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <circle cx="5" cy="5" r="2" stroke="currentColor" stroke-width="1.4"/>
+                  <circle cx="15" cy="6" r="2" stroke="currentColor" stroke-width="1.4"/>
+                  <circle cx="8" cy="15" r="2" stroke="currentColor" stroke-width="1.4"/>
+                  <path d="m6.7 5.4 6.3.5M6.2 6.9 7.3 13m6.5-5.8-4.6 6.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+                <span>生成图</span>
+              </button>
+              <button class="button button-quiet shuffle-button" id="shuffleBtn" type="button">
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M3 5.5h2.6c1 0 1.9.5 2.5 1.3l3.8 5.4c.6.8 1.5 1.3 2.5 1.3H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="m14.8 2.8 3 3-3 3M3 14.5h2.6c1 0 1.9-.5 2.5-1.3l.8-1.1m4.4-2.9.8-1.1c.6-.8 1.5-1.3 2.5-1.3H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="m14.8 11.8 3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>换一题</span>
+              </button>
+            </div>
+          </header>
+
+          <div class="graph-stage">
+            <div class="stage-bar">
+              <div class="route-chip" id="routeChip" aria-label="起点和终点">
+                <span class="route-point" id="routeStartPoint">
+                  <span class="route-key" id="routeStartKey">起点</span>
+                  <span class="route-node is-start" id="routeStart">A</span>
+                </span>
+                <svg class="route-arrow" id="routeArrow" viewBox="0 0 26 10" fill="none" aria-hidden="true">
+                  <path d="M1 5h22m-4-3.5L22.5 5 19 8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="route-point" id="routeEndPoint">
+                  <span class="route-key" id="routeEndKey">终点</span>
+                  <span class="route-node is-end" id="routeEnd">H</span>
+                </span>
+              </div>
+              <div class="stage-status">
+                <span class="phase-label" id="stagePhase">待运行</span>
+                <span class="stage-divider" aria-hidden="true"></span>
+                <span class="step-counter" id="stepCounter">初始状态</span>
+              </div>
+            </div>
+
+            <div class="graph-canvas">
+              <svg id="graphSvg" class="graph-svg" viewBox="0 0 1000 470" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="graphTitle graphDesc">
+                <title id="graphTitle">加权无向图与最短路径搜索过程</title>
+                <desc id="graphDesc">节点可通过拖拽调整位置。颜色表示节点在 Dijkstra 算法中的状态。</desc>
+                <defs>
+                  <filter id="nodeShadow" x="-100%" y="-100%" width="300%" height="300%">
+                    <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000000" flood-opacity=".35"/>
+                  </filter>
+                </defs>
+                <g id="edgeLayer"></g>
+                <g id="nodeLayer"></g>
+              </svg>
+              <div class="drag-hint" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none">
+                  <path d="M8 2v4M8 10v4M2 8h4M10 8h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  <circle cx="8" cy="8" r="1.4" fill="currentColor"/>
+                </svg>
+                <span>拖拽节点调整布局</span>
+              </div>
+            </div>
+          </div>
+
+          <footer class="graph-footer">
+            <div class="legend" id="legend" aria-label="节点与边的状态图例">
+              <span class="legend-item"><i class="legend-dot is-current"></i>当前节点</span>
+              <span class="legend-item"><i class="legend-dot is-frontier"></i>队列候选</span>
+              <span class="legend-item"><i class="legend-dot is-settled"></i>已确定</span>
+              <span class="legend-item"><i class="legend-line is-path"></i>最短路径</span>
+            </div>
+            <div class="timeline">
+              <div class="timeline-copy">
+                <span id="progressLabel">尚未开始</span>
+                <span class="timer-value" id="progressValue">0%</span>
+              </div>
+              <div class="progress-track" role="progressbar" aria-label="推演进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack">
+                <span class="progress-fill" id="progressFill"></span>
+              </div>
+            </div>
+          </footer>
+        </section>
+
+        <section class="panel code-panel" aria-labelledby="codeTitle">
+          <header class="code-header">
+            <div>
+              <div class="eyebrow-line">
+                <span class="eyebrow">ALGORITHM</span>
+                <span class="eyebrow-separator" aria-hidden="true"></span>
+                <span class="code-language" id="codeLanguageLabel">PSEUDOCODE · DIJKSTRA</span>
+              </div>
+              <h2 id="codeTitle">算法骨架</h2>
+            </div>
+            <span class="algo-chip" id="algoChip">贪心 + 松弛</span>
+          </header>
+
+          <div class="code-body">
+            <div class="code-stack">
+            <div class="code-block" id="pseudoCode" data-algorithm="dijkstra" aria-label="Dijkstra 伪代码">
+              <div class="code-line" data-line="1"><span class="line-no">01</span><code><span class="tok-keyword">function</span> <span class="tok-fn">Dijkstra</span>(G, s, t):</code></div>
+              <div class="code-line" data-line="2"><span class="line-no">02</span><code>  <span class="tok-keyword">for</span> v <span class="tok-keyword">in</span> G.vertices:</code></div>
+              <div class="code-line" data-line="3"><span class="line-no">03</span><code>    dist[v] ← ∞; prev[v] ← <span class="tok-value">null</span></code></div>
+              <div class="code-line" data-line="4"><span class="line-no">04</span><code>  dist[s] ← <span class="tok-value">0</span>; PQ ← <span class="tok-fn">MinHeap</span>((s, 0))</code></div>
+              <div class="code-line" data-line="5"><span class="line-no">05</span><code>  <span class="tok-keyword">while</span> PQ <span class="tok-keyword">is not empty</span>:</code></div>
+              <div class="code-line" data-line="6"><span class="line-no">06</span><code>    u ← PQ.<span class="tok-fn">extractMin</span>()</code></div>
+              <div class="code-line" data-line="7"><span class="line-no">07</span><code>    <span class="tok-keyword">if</span> u = t: <span class="tok-keyword">return</span> <span class="tok-fn">rebuildPath</span>(prev, t)</code></div>
+              <div class="code-line" data-line="8"><span class="line-no">08</span><code>    <span class="tok-keyword">for</span> (v, w) <span class="tok-keyword">in</span> G.adj[u]:</code></div>
+              <div class="code-line" data-line="9"><span class="line-no">09</span><code>      <span class="tok-keyword">if</span> v <span class="tok-keyword">is finalized</span>: <span class="tok-keyword">continue</span></code></div>
+              <div class="code-line" data-line="10"><span class="line-no">10</span><code>      alt ← dist[u] + w</code></div>
+              <div class="code-line" data-line="11"><span class="line-no">11</span><code>      <span class="tok-keyword">if</span> alt &lt; dist[v]:</code></div>
+              <div class="code-line" data-line="12"><span class="line-no">12</span><code>        dist[v] ← alt; prev[v] ← u</code></div>
+              <div class="code-line" data-line="13"><span class="line-no">13</span><code>        PQ.<span class="tok-fn">decreaseKey</span>(v, alt)</code></div>
+              <div class="code-line" data-line="14"><span class="line-no">14</span><code>  <span class="tok-keyword">return</span> <span class="tok-string">"unreachable"</span></code></div>
+            </div>
+
+            <div class="code-block" data-algorithm="bfs" aria-label="BFS 伪代码" hidden>
+              <div class="code-line" data-line="1"><span class="line-no">01</span><code><span class="tok-keyword">function</span> <span class="tok-fn">BFS</span>(G, s, t):</code></div>
+              <div class="code-line" data-line="2"><span class="line-no">02</span><code>  <span class="tok-keyword">for</span> v <span class="tok-keyword">in</span> G.vertices:</code></div>
+              <div class="code-line" data-line="3"><span class="line-no">03</span><code>    dist[v] ← ∞; prev[v] ← <span class="tok-value">null</span></code></div>
+              <div class="code-line" data-line="4"><span class="line-no">04</span><code>  dist[s] ← <span class="tok-value">0</span>; Q ← <span class="tok-fn">Queue</span>([s])</code></div>
+              <div class="code-line" data-line="5"><span class="line-no">05</span><code>  <span class="tok-keyword">while</span> Q <span class="tok-keyword">is not empty</span>:</code></div>
+              <div class="code-line" data-line="6"><span class="line-no">06</span><code>    u ← Q.<span class="tok-fn">dequeue</span>()</code></div>
+              <div class="code-line" data-line="7"><span class="line-no">07</span><code>    <span class="tok-keyword">if</span> u = t: <span class="tok-keyword">return</span> <span class="tok-fn">rebuildPath</span>(prev, t)</code></div>
+              <div class="code-line" data-line="8"><span class="line-no">08</span><code>    <span class="tok-keyword">for</span> v <span class="tok-keyword">in</span> G.adj[u]:</code></div>
+              <div class="code-line" data-line="9"><span class="line-no">09</span><code>      <span class="tok-keyword">if</span> dist[v] ≠ ∞: <span class="tok-keyword">continue</span></code></div>
+              <div class="code-line" data-line="10"><span class="line-no">10</span><code>      dist[v] ← dist[u] + <span class="tok-value">1</span></code></div>
+              <div class="code-line" data-line="11"><span class="line-no">11</span><code>      prev[v] ← u</code></div>
+              <div class="code-line" data-line="12"><span class="line-no">12</span><code>      Q.<span class="tok-fn">enqueue</span>(v)</code></div>
+              <div class="code-line" data-line="13"><span class="line-no">13</span><code>  <span class="tok-keyword">return</span> <span class="tok-string">"unreachable"</span></code></div>
+            </div>
+
+            <div class="code-block" data-algorithm="dfs" aria-label="DFS 伪代码" hidden>
+              <div class="code-line" data-line="1"><span class="line-no">01</span><code><span class="tok-keyword">function</span> <span class="tok-fn">DFS</span>(G, s, t):</code></div>
+              <div class="code-line" data-line="2"><span class="line-no">02</span><code>  <span class="tok-keyword">for</span> v <span class="tok-keyword">in</span> G.vertices:</code></div>
+              <div class="code-line" data-line="3"><span class="line-no">03</span><code>    dist[v] ← ∞; prev[v] ← <span class="tok-value">null</span></code></div>
+              <div class="code-line" data-line="4"><span class="line-no">04</span><code>  seen ← {s}; dist[s] ← <span class="tok-value">0</span></code></div>
+              <div class="code-line" data-line="5"><span class="line-no">05</span><code>  stack ← [s]</code></div>
+              <div class="code-line" data-line="6"><span class="line-no">06</span><code>  <span class="tok-keyword">while</span> stack <span class="tok-keyword">is not empty</span>:</code></div>
+              <div class="code-line" data-line="7"><span class="line-no">07</span><code>    u ← stack.<span class="tok-fn">pop</span>()</code></div>
+              <div class="code-line" data-line="8"><span class="line-no">08</span><code>    <span class="tok-keyword">if</span> u = t: <span class="tok-keyword">return</span> <span class="tok-fn">rebuildPath</span>(prev, t)</code></div>
+              <div class="code-line" data-line="9"><span class="line-no">09</span><code>    <span class="tok-keyword">for</span> v <span class="tok-keyword">in</span> <span class="tok-fn">reverse</span>(G.adj[u]):</code></div>
+              <div class="code-line" data-line="10"><span class="line-no">10</span><code>      <span class="tok-keyword">if</span> v <span class="tok-keyword">in</span> seen: <span class="tok-keyword">continue</span></code></div>
+              <div class="code-line" data-line="11"><span class="line-no">11</span><code>      seen.<span class="tok-fn">add</span>(v)</code></div>
+              <div class="code-line" data-line="12"><span class="line-no">12</span><code>      dist[v] ← dist[u] + <span class="tok-value">1</span>; prev[v] ← u</code></div>
+              <div class="code-line" data-line="13"><span class="line-no">13</span><code>      stack.<span class="tok-fn">push</span>(v)</code></div>
+              <div class="code-line" data-line="14"><span class="line-no">14</span><code>  <span class="tok-keyword">return</span> <span class="tok-string">"unreachable"</span></code></div>
+            </div>
+
+            <div class="code-block" data-algorithm="prim" aria-label="Prim 伪代码" hidden>
+              <div class="code-line" data-line="1"><span class="line-no">01</span><code><span class="tok-keyword">function</span> <span class="tok-fn">Prim</span>(G, root):</code></div>
+              <div class="code-line" data-line="2"><span class="line-no">02</span><code>  <span class="tok-keyword">for</span> v <span class="tok-keyword">in</span> G.vertices:</code></div>
+              <div class="code-line" data-line="3"><span class="line-no">03</span><code>    key[v] ← ∞; parent[v] ← <span class="tok-value">null</span></code></div>
+              <div class="code-line" data-line="4"><span class="line-no">04</span><code>  key[root] ← <span class="tok-value">0</span>; visited ← {}</code></div>
+              <div class="code-line" data-line="5"><span class="line-no">05</span><code>  <span class="tok-keyword">while</span> visited.size &lt; |V|:</code></div>
+              <div class="code-line" data-line="6"><span class="line-no">06</span><code>    u ← <span class="tok-fn">minKey</span>(unvisited)</code></div>
+              <div class="code-line" data-line="7"><span class="line-no">07</span><code>    <span class="tok-keyword">if</span> key[u] = ∞: <span class="tok-keyword">break</span></code></div>
+              <div class="code-line" data-line="8"><span class="line-no">08</span><code>    visited.<span class="tok-fn">add</span>(u); total += key[u]</code></div>
+              <div class="code-line" data-line="9"><span class="line-no">09</span><code>    <span class="tok-keyword">for</span> (v, w) <span class="tok-keyword">in</span> G.adj[u]:</code></div>
+              <div class="code-line" data-line="10"><span class="line-no">10</span><code>      <span class="tok-keyword">if</span> v <span class="tok-keyword">not in</span> visited <span class="tok-keyword">and</span> w &lt; key[v]:</code></div>
+              <div class="code-line" data-line="11"><span class="line-no">11</span><code>        key[v] ← w; parent[v] ← u</code></div>
+              <div class="code-line" data-line="12"><span class="line-no">12</span><code>  <span class="tok-keyword">return</span> (visited, parent, total)</code></div>
+            </div>
+            </div>
+
+            <aside class="code-aside">
+              <div class="aside-note">
+                <span class="aside-label" id="invariantLabel">GREEDY INVARIANT</span>
+                <p id="invariantText">节点第一次从优先队列取出时，它的距离已经是最终最短距离。</p>
+              </div>
+              <div class="complexity-box">
+                <div>
+                  <span>时间复杂度</span>
+                  <strong id="timeComplexity">O((V+E) log V)</strong>
+                </div>
+                <div>
+                  <span>空间复杂度</span>
+                  <strong id="spaceComplexity">O(V + E)</strong>
+                </div>
+              </div>
+              <p class="aside-warning"><span aria-hidden="true">!</span><em id="warningText">边权必须非负，否则贪心前提不再成立。</em></p>
+            </aside>
+          </div>
+        </section>
+      </div>
+
+      <aside class="side-column" aria-label="算法控制与状态">
+        <section class="panel control-panel" aria-labelledby="controlTitle">
+          <header class="panel-heading">
+            <div>
+              <span class="eyebrow">PLAYBACK</span>
+              <h2 id="controlTitle">推演控制</h2>
+            </div>
+            <span class="step-pill" id="stepPill">0 / 0</span>
+          </header>
+
+          <div class="node-picker" id="nodePicker">
+            <label class="field">
+              <span class="field-label" id="startFieldLabel">起点</span>
+              <span class="select-shell">
+                <select id="startSelect" aria-label="选择起点节点"></select>
+              </span>
+            </label>
+            <span class="picker-arrow" id="pickerArrow" aria-hidden="true">→</span>
+            <label class="field" id="targetField">
+              <span class="field-label" id="targetFieldLabel">终点</span>
+              <span class="select-shell">
+                <select id="endSelect" aria-label="选择终点节点"></select>
+              </span>
+            </label>
+          </div>
+
+          <div class="transport">
+            <button class="button button-primary" id="playBtn" type="button">
+              <svg class="icon-play" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M5.7 3.9c0-.7.8-1.1 1.4-.7l7 4.7c.6.4.6 1.2 0 1.6l-7 4.7c-.6.4-1.4 0-1.4-.7V3.9Z" fill="currentColor"/>
+              </svg>
+              <svg class="icon-pause" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <rect x="4.5" y="3.5" width="3" height="11" rx="1" fill="currentColor"/>
+                <rect x="10.5" y="3.5" width="3" height="11" rx="1" fill="currentColor"/>
+              </svg>
+              <span id="playLabel">开始演示</span>
+            </button>
+            <button class="button button-secondary step-button" id="stepBtn" type="button">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M13.4 4.4v9.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M4.6 4.2 11 9l-6.4 4.8V4.2Z" fill="currentColor"/>
+              </svg>
+              <span>单步</span>
+            </button>
+            <button class="button button-icon" id="resetBtn" type="button" aria-label="重置推演" title="重置推演">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M4 6.5a6 6 0 1 1-.3 4.2M4 2.8v4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="speed-row">
+            <div class="speed-label">
+              <span>动画速度</span>
+              <strong id="speedValue">1.0×</strong>
+            </div>
+            <input type="range" id="speedRange" min="0.5" max="3" step="0.5" value="1" aria-label="动画速度">
+          </div>
+
+          <div class="control-tip">
+            <span class="kbd">SPACE</span>
+            <span>播放 / 暂停</span>
+            <span class="control-tip-divider"></span>
+            <span class="kbd">→</span>
+            <span>单步</span>
+          </div>
+        </section>
+
+        <section class="panel status-panel" aria-labelledby="statusTitle">
+          <header class="panel-heading">
+            <div>
+              <span class="eyebrow">LIVE TRACE</span>
+              <h2 id="statusTitle">算法动态</h2>
+            </div>
+            <span class="event-chip" id="eventChip" data-kind="init">READY</span>
+          </header>
+
+          <div class="event-block">
+            <span class="event-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M5 17.5 9.4 7l5 8 4.6-10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="5" cy="17.5" r="2.25" fill="currentColor"/>
+                <circle cx="19" cy="5" r="2.25" fill="currentColor"/>
+              </svg>
+            </span>
+            <div class="event-copy" aria-live="polite">
+              <h3 id="statusMessage">准备就绪</h3>
+              <p id="statusDetail">选择起点与终点，然后开始演示。每一步都会解释距离为什么被更新，或者为什么被保留。</p>
+            </div>
+          </div>
+
+          <div class="metrics-row" aria-label="当前统计">
+            <div class="metric">
+              <span id="primaryMetricLabel">已确定</span>
+              <strong><span id="settledCount">0</span><small> / <span id="settledTotal">9</span></small></strong>
+            </div>
+            <div class="metric">
+              <span id="secondaryMetricLabel">队列中</span>
+              <strong id="queueMetric">1</strong>
+            </div>
+            <div class="metric">
+              <span id="thirdMetricLabel">当前距离</span>
+              <strong id="currentDistance">0</strong>
+            </div>
+          </div>
+
+          <div class="result-card is-ready" id="resultCard">
+            <div class="result-head">
+              <span id="resultLabel">最短路径</span>
+              <strong id="resultCost">—</strong>
+            </div>
+            <div class="path-chain" id="pathChain">等待终点出队</div>
+          </div>
+        </section>
+
+        <section class="panel queue-panel" aria-labelledby="queueTitle">
+          <header class="panel-heading">
+            <div>
+              <span class="eyebrow" id="queueEyebrow">PRIORITY QUEUE</span>
+              <h2 id="queueTitle">优先队列</h2>
+            </div>
+            <span class="queue-count" id="queueCount">1 个候选</span>
+          </header>
+
+          <div class="queue-list" id="queueList" role="list" aria-label="优先队列中的候选节点"></div>
+
+          <footer class="queue-footer">
+            <span class="queue-order-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M3 3.5h10M5 8h6M7 12.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span id="queueFootnote">按暂定距离升序 · 每次取出最小项</span>
+          </footer>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="page-footer">
+      <span>GRAPH ALGORITHMS / INTERACTIVE LAB</span>
+      <span class="footer-dot" aria-hidden="true"></span>
+      <span>切换算法与起终点，观察搜索前沿如何收缩。</span>
+    </footer>
+  </div>
+
+  <div class="graph-gen-overlay" id="graphGenOverlay" hidden>
+    <section class="graph-gen-modal" role="dialog" aria-modal="true" aria-labelledby="graphGenTitle" aria-describedby="graphGenNote">
+      <header class="graph-gen-head">
+        <div>
+          <span class="eyebrow">GRAPH GENERATOR</span>
+          <h2 id="graphGenTitle">生成测试图</h2>
+        </div>
+        <button class="button button-icon graph-gen-close" id="graphGenClose" type="button" aria-label="关闭生成图面板">
+          <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="m4.5 4.5 9 9m0-9-9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </header>
+      <p class="graph-gen-lede">连通无向加权图。生成后可继续拖拽节点、切换起点/终点，所有图算法立即复用。</p>
+      <div class="graph-gen-grid">
+        <label class="graph-gen-field is-wide">
+          <span>节点数 <strong id="graphGenNodeValue">9</strong></span>
+          <input type="range" id="graphGenNodes" min="6" max="10" step="1" value="9">
+        </label>
+        <label class="graph-gen-field">
+          <span>边密度</span>
+          <select id="graphGenDensity">
+            <option value="sparse">稀疏</option>
+            <option value="medium" selected>适中</option>
+            <option value="dense">密集</option>
+          </select>
+        </label>
+        <label class="graph-gen-field">
+          <span>权重上限</span>
+          <select id="graphGenWeight">
+            <option value="9" selected>9</option>
+            <option value="20">20</option>
+          </select>
+        </label>
+        <label class="graph-gen-field is-wide">
+          <span>随机种子</span>
+          <input type="number" id="graphGenSeed" min="1" max="999999" step="1" value="2026">
+        </label>
+      </div>
+      <p class="graph-gen-note" id="graphGenNote">节点按椭圆分布并轻微抖动；生成保证连通，起点为 A，终点自动选为最远节点。</p>
+      <footer class="graph-gen-actions">
+        <button class="button button-primary" id="graphGenSubmit" type="button">生成并载入</button>
+        <button class="button button-quiet" id="graphGenCancel" type="button">取消</button>
+      </footer>
+    </section>
+  </div>
+
+  <script src="dijkstra.js"></script>
+  <script src="graph-algorithms.js"></script>
+  <script src="graphs.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

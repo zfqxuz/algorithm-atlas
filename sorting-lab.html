@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="交互式排序算法实验室：冒泡、选择、插入、希尔、归并、快速、堆排序与计数排序，可调整数组规模、分布、值域与随机种子。">
+  <meta name="theme-color" content="#f7f4ed">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>排序实验室 · 寻径算法图谱</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="atlas.css">
+  <link rel="stylesheet" href="claude.css">
+</head>
+<body class="lab-page sorting-lab">
+  <div class="ambient" aria-hidden="true"></div>
+
+  <div class="app-shell lab-shell">
+    <header class="topbar lab-topbar">
+      <a class="brand" href="index.html" aria-label="返回算法图谱">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M7.5 23.5 12.8 10.2l6.1 8.2L24.8 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="7.5" cy="23.5" r="3.1" fill="#07100e" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="12.8" cy="10.2" r="2.3" fill="currentColor"/>
+            <circle cx="18.9" cy="18.4" r="2.3" fill="currentColor"/>
+            <circle cx="24.8" cy="6.5" r="3.1" fill="#07100e" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <span class="brand-name">寻径</span>
+          <span class="brand-sub">ALGORITHM ATLAS</span>
+        </span>
+      </a>
+
+      <div class="topbar-meta lab-topbar-meta">
+        <nav class="lab-breadcrumb" aria-label="面包屑导航">
+          <a href="index.html">算法图谱</a>
+          <span class="crumb-sep">/</span>
+          <strong>排序实验室</strong>
+        </nav>
+        <span class="global-status" data-tone="idle">
+          <span class="status-beacon" aria-hidden="true"></span>
+          <span>数据可调</span>
+        </span>
+      </div>
+    </header>
+
+    <main class="lab-main">
+      <header class="lab-masthead">
+        <div>
+          <div class="eyebrow-line">
+            <span class="eyebrow">SORTING &amp; SELECTION</span>
+            <span class="eyebrow-separator" aria-hidden="true"></span>
+            <span class="graph-meta">8 ALGORITHMS · L1–L3</span>
+          </div>
+          <h1>排序<em>实验台</em></h1>
+          <p>同一条数据，换一种策略。调整数组规模、分布、值域和随机种子，观察比较、交换与分治边界如何改变。</p>
+        </div>
+        <div class="lab-masthead-meta">
+          <span class="lab-pill">比较 / 非比较</span>
+          <span class="lab-pill">可播放 · 可单步</span>
+          <span class="lab-pill is-l1">数据参数可调</span>
+        </div>
+      </header>
+
+      <nav class="lab-entries" id="sortAlgorithmTabs" aria-label="选择排序算法"></nav>
+
+      <div class="lab-layout">
+        <div class="lab-primary">
+          <section class="lab-panel sort-stage-panel" aria-labelledby="sortStageTitle">
+            <header class="lab-panel-head sort-stage-head">
+              <div>
+                <span class="eyebrow">VISUALIZATION</span>
+                <h2 id="sortStageTitle">排序舞台</h2>
+              </div>
+              <div class="sort-stage-badges">
+                <span class="atlas-level-badge level-l1" id="sortLevelBadge">L1</span>
+                <span class="lab-pill" id="sortComplexityBadge">O(n²)</span>
+              </div>
+            </header>
+
+            <div class="sort-visual-wrap">
+              <div class="sort-visual-meta">
+                <span id="sortCurrentMessage">准备开始</span>
+                <span id="sortDataSetLabel">随机数据 · 32 项</span>
+              </div>
+              <div class="sort-bars" id="sortBars" role="img" aria-label="排序数组柱状图"></div>
+              <div class="sort-counts" id="sortCounts" hidden>
+                <span class="sort-counts-label">counts</span>
+                <div class="sort-counts-bars" id="sortCountsBars"></div>
+              </div>
+              <div class="sort-bar-legend" aria-label="柱状图颜色说明">
+                <span><i class="sort-swatch is-default"></i>未处理</span>
+                <span><i class="sort-swatch is-compare"></i>比较</span>
+                <span><i class="sort-swatch is-active"></i>写入 / 交换</span>
+                <span><i class="sort-swatch is-pivot"></i>枢轴</span>
+                <span><i class="sort-swatch is-sorted"></i>已就位</span>
+              </div>
+            </div>
+
+            <footer class="sort-controls">
+              <div class="lab-transport">
+                <button class="button button-primary sort-play-button" id="sortPlayBtn" type="button" aria-label="开始播放">
+                  <svg class="icon-play" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <path d="M5.7 3.9c0-.7.8-1.1 1.4-.7l7 4.7c.6.4.6 1.2 0 1.6l-7 4.7c-.6.4-1.4 0-1.4-.7V3.9Z" fill="currentColor"/>
+                  </svg>
+                  <svg class="icon-pause" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <rect x="4.5" y="3.5" width="3" height="11" rx="1" fill="currentColor"/>
+                    <rect x="10.5" y="3.5" width="3" height="11" rx="1" fill="currentColor"/>
+                  </svg>
+                  <span id="sortPlayLabel">播放</span>
+                </button>
+                <button class="button button-secondary" id="sortStepBtn" type="button">单步</button>
+                <button class="button button-icon" id="sortResetBtn" type="button" aria-label="重置动画" title="重置动画">
+                  <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <path d="M4 6.5a6 6 0 1 1-.3 4.2M4 2.8v4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="sort-progress-wrap">
+                <div class="sort-progress-copy">
+                  <span id="sortStepLabel">步骤 0 / 0</span>
+                  <span id="sortProgressValue">0%</span>
+                </div>
+                <div class="lab-progress" role="progressbar" aria-label="排序动画进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="sortProgressTrack">
+                  <span id="sortProgressFill"></span>
+                </div>
+              </div>
+              <label class="sort-speed">
+                <span>速度</span>
+                <input type="range" id="sortSpeed" min="0.5" max="8" step="0.5" value="1" aria-label="排序动画速度">
+                <strong id="sortSpeedValue">1×</strong>
+              </label>
+            </footer>
+          </section>
+
+          <section class="lab-panel" aria-labelledby="sortCodeTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">PSEUDOCODE &amp; ANALYSIS</span>
+                <h2 id="sortCodeTitle">算法骨架</h2>
+              </div>
+              <span class="lab-pill" id="sortCodeAlgorithm">Bubble Sort</span>
+            </header>
+            <div class="lab-panel-body sort-code-body">
+              <div class="lab-code-block" id="sortPseudoCode" aria-label="当前排序算法伪代码"></div>
+              <aside class="sort-code-aside">
+                <div class="sort-note">
+                  <span class="eyebrow">INVARIANT</span>
+                  <p id="sortInvariant">—</p>
+                </div>
+                <div class="sort-facts">
+                  <div><span>时间复杂度</span><strong id="sortTime">O(n²)</strong></div>
+                  <div><span>空间复杂度</span><strong id="sortSpace">O(1)</strong></div>
+                  <div><span>稳定性</span><strong id="sortStable">稳定</strong></div>
+                  <div><span>原地排序</span><strong id="sortInPlace">是</strong></div>
+                </div>
+              </aside>
+            </div>
+          </section>
+        </div>
+
+        <aside class="lab-sidebar">
+          <section class="lab-panel" aria-labelledby="sortDataTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">DATA GENERATOR</span>
+                <h2 id="sortDataTitle">测试数据</h2>
+              </div>
+              <span class="lab-pill" id="sortSeedBadge">seed 1</span>
+            </header>
+            <div class="lab-panel-body">
+              <div class="lab-param-grid">
+                <label class="lab-param is-wide">
+                  <span>数组规模 <strong id="sortSizeValue">32</strong></span>
+                  <div class="lab-param-range">
+                    <input type="range" id="sortSize" min="8" max="64" step="1" value="32">
+                  </div>
+                </label>
+                <label class="lab-param is-wide">
+                  <span>数据分布</span>
+                  <select id="sortDistribution">
+                    <option value="random">随机分布</option>
+                    <option value="near-sorted">近乎有序</option>
+                    <option value="reversed">完全逆序</option>
+                    <option value="few-unique">少量重复值</option>
+                    <option value="sawtooth">锯齿序列</option>
+                  </select>
+                </label>
+                <label class="lab-param">
+                  <span>值域上限</span>
+                  <select id="sortMaxValue">
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100" selected>100</option>
+                    <option value="200">200</option>
+                  </select>
+                </label>
+                <label class="lab-param">
+                  <span>随机种子</span>
+                  <input type="number" id="sortSeed" min="1" max="99999" step="1" value="2026">
+                </label>
+              </div>
+              <div class="lab-actions">
+                <button class="button button-primary" id="sortGenerateBtn" type="button">生成新数据</button>
+                <button class="button button-secondary" id="sortRandomSeedBtn" type="button">换种子</button>
+              </div>
+              <p class="lab-description sort-data-description" id="sortDataDescription">
+                随机数组，值域 0–100。
+              </p>
+              <div class="lab-alert">调参不会立刻替换数据；点击“生成新数据”后才会重建数组与动画轨迹。</div>
+            </div>
+          </section>
+
+          <section class="lab-panel" aria-labelledby="sortStatsTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">LIVE METRICS</span>
+                <h2 id="sortStatsTitle">运行统计</h2>
+              </div>
+              <span class="event-chip" id="sortRunState" data-kind="init">READY</span>
+            </header>
+            <div class="lab-panel-body">
+              <div class="lab-metrics">
+                <div class="lab-metric"><span id="sortComparisonsLabel">比较次数</span><strong id="sortComparisons">0</strong></div>
+                <div class="lab-metric"><span id="sortSwapsLabel">交换 / 写入</span><strong id="sortSwaps">0</strong></div>
+                <div class="lab-metric"><span>已就位</span><strong id="sortSortedCount">0</strong></div>
+              </div>
+              <p class="lab-message" id="sortDetail">选择一种排序算法，然后播放或单步推进。</p>
+            </div>
+          </section>
+
+          <section class="lab-panel" aria-labelledby="sortProfileTitle">
+            <header class="lab-panel-head">
+              <div>
+                <span class="eyebrow">ALGORITHM PROFILE</span>
+                <h2 id="sortProfileTitle">算法档案</h2>
+              </div>
+              <span class="atlas-level-badge level-l1" id="sortProfileLevel">L1</span>
+            </header>
+            <div class="lab-panel-body">
+              <p class="lab-description" id="sortDescription">—</p>
+              <div class="sort-profile-tags" id="sortProfileTags"></div>
+              <p class="lab-visual-note">提示：切换算法会复用当前数组，但会重新生成动画轨迹。</p>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="page-footer atlas-footer">
+      <span>SORTING LAB / ALGORITHM ATLAS</span>
+      <span class="footer-dot" aria-hidden="true"></span>
+      <span>调整数据，比较成本。</span>
+      <span class="atlas-footer-note">本地运行 · 无外部依赖</span>
+    </footer>
+  </div>
+
+  <script src="engines/sorting-engine.js"></script>
+  <script src="lab-core.js"></script>
+  <script src="sorting-lab.js"></script>
+</body>
+</html>

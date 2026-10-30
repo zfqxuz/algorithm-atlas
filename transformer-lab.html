@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Transformer 实验台：逐 token 查看自注意力权重、因果掩码、多头差异与输出向量，理解 Q/K/V 的实际计算。">
+  <meta name="theme-color" content="#f7f4ed">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>Transformer 实验台 · 寻径算法图谱</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="atlas.css">
+  <link rel="stylesheet" href="claude.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body class="lab-page">
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="app-shell lab-shell">
+    <header class="topbar lab-topbar">
+      <a class="brand" href="index.html" aria-label="返回算法图谱">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M7.5 23.5 12.8 10.2l6.1 8.2L24.8 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="7.5" cy="23.5" r="3.1" fill="#f7f4ed" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="12.8" cy="10.2" r="2.3" fill="currentColor"/>
+            <circle cx="18.9" cy="18.4" r="2.3" fill="currentColor"/>
+            <circle cx="24.8" cy="6.5" r="3.1" fill="#f7f4ed" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="brand-copy"><span class="brand-name">寻径</span><span class="brand-sub">ALGORITHM ATLAS</span></span>
+      </a>
+      <div class="topbar-meta lab-topbar-meta">
+        <nav class="lab-breadcrumb" aria-label="面包屑导航">
+          <a href="index.html">算法图谱</a><span class="crumb-sep">/</span>
+          <a href="visuals.html">可视化百科</a><span class="crumb-sep">/</span>
+          <strong>Transformer 实验台</strong>
+        </nav>
+        <span class="global-status" data-tone="idle"><span class="status-beacon" aria-hidden="true"></span><span>NEURAL · L3–L4</span></span>
+      </div>
+    </header>
+
+    <main class="lab-main">
+      <header class="lab-masthead">
+        <div class="lab-masthead-copy">
+          <div class="eyebrow-line"><span class="eyebrow">TRANSFORMER / SELF-ATTENTION</span><span class="eyebrow-separator" aria-hidden="true"></span><span class="graph-meta">QUERY · KEY · VALUE · MASK</span></div>
+          <h1>注意力<em>实验台</em></h1>
+          <p>“寻径让算法可见”七个 token 的真实 Q/K/V 计算。切换注意力头、因果掩码与查询位置，观察每一行权重如何归一化，以及未来 token 如何被屏蔽。</p>
+        </div>
+        <div class="lab-masthead-meta">
+          <span class="lab-pill is-l3">Self-Attention</span>
+          <span class="lab-pill is-l4">Causal Mask</span>
+          <span class="lab-pill">7 tokens × 3 heads</span>
+          <span class="lab-pill">确定性计算</span>
+        </div>
+      </header>
+
+      <div class="lab-layout">
+        <div class="lab-primary">
+          <section class="lab-panel">
+            <div class="lab-panel-head">
+              <div><span class="eyebrow">ATTENTION MATRIX</span><h2>每一行都是一次加权</h2></div>
+              <span class="lab-pill" id="attnHeadBadge">Head 1</span>
+            </div>
+            <div class="lab-panel-body">
+              <div class="attn-token-row" id="attnTokens" aria-label="token 序列"></div>
+              <div class="attn-grid">
+                <div class="attn-matrix-wrap" id="attnMatrix"></div>
+                <div class="attn-side">
+                  <div class="attn-query-line">当前查询 token <strong id="attnQuery">寻</strong></div>
+                  <div class="attn-bars" id="attnBars"></div>
+                  <p class="lab-visual-note" id="attnNote">选中一行，查看它如何把注意力分配给所有 Key。</p>
+                </div>
+              </div>
+            </div>
+            <div class="lab-panel-foot"><span id="attnStatus">行和 = 1；因果掩码把未来位置置零。</span></div>
+          </section>
+
+          <section class="lab-panel">
+            <div class="lab-panel-head"><div><span class="eyebrow">THE COMPUTATION</span><h2>Q、K、V 与缩放点积</h2></div><span class="lab-pill">d = 8</span></div>
+            <div class="lab-panel-body">
+              <pre class="lab-code-block" id="attnCode"></pre>
+              <div class="opt-explain">
+                <p><strong>Query：</strong>当前 token 想找什么。<strong>Key：</strong>每个 token 提供什么索引。<strong>Value：</strong>真正被加权汇总的内容。</p>
+                <p><strong>除以 √d：</strong>控制点积随维度增长的尺度，避免 softmax 进入饱和区。</p>
+                <p><strong>因果掩码：</strong>GPT 类模型只允许看到当前与历史 token；BERT 类编码器不屏蔽未来。</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="lab-sidebar">
+          <section class="lab-panel">
+            <div class="lab-panel-head"><div><span class="eyebrow">CONTROLS</span><h2>观察参数</h2></div><span class="lab-pill" id="attnState">READY</span></div>
+            <div class="lab-panel-body">
+              <label class="lab-param">注意力头
+                <select id="attnHead">
+                  <option value="0">Head 1 · 句法</option>
+                  <option value="1">Head 2 · 指代</option>
+                  <option value="2">Head 3 · 位置</option>
+                </select>
+              </label>
+              <label class="attn-toggle"><input id="attnCausal" type="checkbox" checked> 使用因果掩码（只看左侧）</label>
+              <div class="lab-actions">
+                <button class="button button-secondary" id="attnPrev" type="button">← 上一个 token</button>
+                <button class="button button-primary" id="attnNext" type="button">下一个 token →</button>
+              </div>
+              <p class="research-note" id="attnInsight">不同头使用不同的投影矩阵；同一 token 在不同 head 下会关注不同位置。</p>
+            </div>
+          </section>
+
+          <section class="lab-panel">
+            <div class="lab-panel-head"><div><span class="eyebrow">LIVE METRICS</span><h2>行统计</h2></div></div>
+            <div class="lab-panel-body">
+              <div class="attn-metrics">
+                <div class="attn-metric"><span>行和</span><strong id="attnRowSum">1.000</strong></div>
+                <div class="attn-metric"><span>Top token</span><strong id="attnTop">—</strong></div>
+                <div class="attn-metric"><span>熵</span><strong id="attnEntropy">—</strong></div>
+                <div class="attn-metric"><span>输出范数</span><strong id="attnNorm">—</strong></div>
+              </div>
+              <p class="research-note">熵越低，注意力越集中；熵接近 log(n) 时接近均匀分布。</p>
+            </div>
+          </section>
+
+          <section class="lab-panel">
+            <div class="lab-panel-head"><div><span class="eyebrow">BLOCK MAP</span><h2>Transformer 块</h2></div></div>
+            <div class="lab-panel-body">
+              <div class="block-flow">
+                <span>Input</span><i>→</i><span>MHA</span><i>→</i><span>Add &amp; Norm</span><i>→</i><span>FFN</span><i>→</i><span>Add &amp; Norm</span>
+              </div>
+              <div class="lab-links">
+                <a href="visuals.html#attention">自注意力视觉笔记 →</a>
+                <a href="visuals.html#multihead">多头注意力 →</a>
+                <a href="visuals.html#positional-encoding">位置编码 →</a>
+                <a href="visuals.html#transformer-block">Transformer 块 →</a>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="page-footer"><span>寻径 / TRANSFORMER LAB</span><span class="footer-dot"></span><span>权重由固定嵌入与投影矩阵计算，不含训练。</span></footer>
+  </div>
+  <script type="module" src="/src/labs/transformer.ts"></script>
+</body>
+</html>

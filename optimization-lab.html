@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="优化实验台：在二维损失地形上逐步观察梯度下降、动量、RMSProp 与 Adam 的轨迹、学习率和收敛行为。">
+  <meta name="theme-color" content="#f7f4ed">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>优化实验台 · 寻径算法图谱</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="atlas.css">
+  <link rel="stylesheet" href="claude.css">
+  <link rel="stylesheet" href="visuals.css">
+</head>
+<body class="lab-page">
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="app-shell lab-shell">
+    <header class="topbar lab-topbar">
+      <a class="brand" href="index.html" aria-label="返回算法图谱">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M7.5 23.5 12.8 10.2l6.1 8.2L24.8 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="7.5" cy="23.5" r="3.1" fill="#f7f4ed" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="12.8" cy="10.2" r="2.3" fill="currentColor"/>
+            <circle cx="18.9" cy="18.4" r="2.3" fill="currentColor"/>
+            <circle cx="24.8" cy="6.5" r="3.1" fill="#f7f4ed" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="brand-copy"><span class="brand-name">寻径</span><span class="brand-sub">ALGORITHM ATLAS</span></span>
+      </a>
+      <div class="topbar-meta lab-topbar-meta">
+        <nav class="lab-breadcrumb" aria-label="面包屑导航">
+          <a href="index.html">算法图谱</a><span class="crumb-sep">/</span>
+          <a href="visuals.html">可视化百科</a><span class="crumb-sep">/</span>
+          <strong>优化实验台</strong>
+        </nav>
+        <span class="global-status" data-tone="idle"><span class="status-beacon" aria-hidden="true"></span><span>OPTIMIZATION · L2–L3</span></span>
+      </div>
+    </header>
+
+    <main class="lab-main">
+      <header class="lab-masthead">
+        <div class="lab-masthead-copy">
+          <div class="eyebrow-line"><span class="eyebrow">OPTIMIZATION / GRADIENT METHODS</span><span class="eyebrow-separator" aria-hidden="true"></span><span class="graph-meta">LOSS LANDSCAPE · STEP BY STEP</span></div>
+          <h1>优化<em>实验台</em></h1>
+          <p>同一片损失地形，换一种下降策略。调学习率、选优化器、拖动或点击地形设置起点，观察轨迹如何在峡谷、鞍点与平坦区域之间做出不同选择。</p>
+        </div>
+        <div class="lab-masthead-meta">
+          <span class="lab-pill is-l2">GD / Momentum</span>
+          <span class="lab-pill is-l3">RMSProp / Adam</span>
+          <span class="lab-pill">可播放 · 可单步</span>
+          <span class="lab-pill">参数可调</span>
+        </div>
+      </header>
+
+      <div class="lab-layout">
+        <div class="lab-primary">
+          <section class="lab-panel">
+            <div class="lab-panel-head">
+              <div><span class="eyebrow">LOSS LANDSCAPE</span><h2>损失地形与下降轨迹</h2></div>
+              <span class="lab-pill" id="optStatus">READY</span>
+            </div>
+            <div class="lab-panel-body">
+              <p class="lab-description">等值线越密，损失变化越快；橙线是优化器走过的路径。点击地形可重设起点。</p>
+              <div class="opt-stage" id="optStage" role="img" aria-label="二维损失地形与优化轨迹"></div>
+              <div class="opt-legend">
+                <span><i class="is-path"></i>优化轨迹</span>
+                <span><i class="is-current"></i>当前点</span>
+                <span><i class="is-opt"></i>最优点</span>
+                <span class="opt-note">等值线由连续损失函数采样得到</span>
+              </div>
+            </div>
+            <div class="lab-panel-foot"><span id="optStatusText">选择优化器并开始。</span></div>
+          </section>
+
+          <section class="lab-panel">
+            <div class="lab-panel-head">
+              <div><span class="eyebrow">PSEUDOCODE &amp; UPDATE</span><h2>更新规则</h2></div>
+              <span class="lab-pill" id="optAlgoBadge">Gradient Descent</span>
+            </div>
+            <div class="lab-panel-body">
+              <pre class="lab-code-block" id="optCode"></pre>
+              <div class="opt-explain">
+                <p><strong>学习率 η：</strong>每一步沿下降方向走多远。太大时轨迹会越过谷底并震荡，太小时收敛很慢。</p>
+                <p><strong>动量：</strong>累积历史梯度，在一致方向上加速；在峡谷中能抑制横向震荡。</p>
+                <p><strong>Adam：</strong>同时维护一阶和二阶矩，为每个坐标缩放步长，但可能在某些任务上泛化不同。</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="lab-sidebar">
+          <section class="lab-panel">
+            <div class="lab-panel-head"><div><span class="eyebrow">CONTROLS</span><h2>实验参数</h2></div></div>
+            <div class="lab-panel-body">
+              <label class="lab-param">损失函数
+                <select id="optFunction">
+                  <option value="bowl">椭圆碗：x² + 4y²</option>
+                  <option value="valley">Rosenbrock 峡谷</option>
+                  <option value="anisotropic">各向异性二次型</option>
+                </select>
+              </label>
+              <label class="lab-param">优化器
+                <select id="optAlgorithm">
+                  <option value="gd">Gradient Descent</option>
+                  <option value="momentum">Momentum</option>
+                  <option value="rmsprop">RMSProp</option>
+                  <option value="adam">Adam</option>
+                </select>
+              </label>
+              <label class="lab-param opt-range">
+                <span class="opt-range-head">学习率 <strong id="optLearningValue">0.080</strong></span>
+                <input id="optLearning" type="range" min="1" max="200" step="1" value="80">
+              </label>
+              <div class="lab-actions">
+                <button class="button button-primary" id="optPlay" type="button">播放</button>
+                <button class="button button-secondary" id="optStep" type="button">单步</button>
+                <button class="button button-quiet" id="optReset" type="button">重置</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="lab-panel">
+            <div class="lab-panel-head"><div><span class="eyebrow">LIVE METRICS</span><h2>当前状态</h2></div><span class="lab-pill" id="optStateBadge">READY</span></div>
+            <div class="lab-panel-body">
+              <div class="opt-metrics">
+                <div class="opt-metric"><span>迭代</span><strong id="optIteration">0</strong></div>
+                <div class="opt-metric"><span>损失</span><strong id="optLoss">—</strong></div>
+                <div class="opt-metric"><span>梯度范数</span><strong id="optGradient">—</strong></div>
+                <div class="opt-metric"><span>位置</span><strong id="optPosition">—</strong></div>
+              </div>
+              <p class="research-note" id="optInsight">提示：先试椭圆碗上的普通 GD，再换到 Rosenbrock 峡谷。</p>
+            </div>
+          </section>
+
+          <section class="lab-panel">
+            <div class="lab-panel-head"><div><span class="eyebrow">CONTINUE READING</span><h2>延伸</h2></div></div>
+            <div class="lab-panel-body">
+              <div class="lab-links">
+                <a href="visuals.html#gradient-descent">梯度下降视觉笔记 →</a>
+                <a href="visuals.html#momentum">动量法 →</a>
+                <a href="visuals.html#adam">Adam →</a>
+                <a href="visuals.html#newton">牛顿法 →</a>
+                <a href="visuals.html#simulated-annealing">模拟退火 →</a>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="page-footer"><span>寻径 / OPTIMIZATION LAB</span><span class="footer-dot"></span><span>更新在浏览器本地执行，无后端。</span></footer>
+  </div>
+  <script type="module" src="/src/labs/optimization.ts"></script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="寻径研究生专题：最大流最小割、线性规划与单纯形、NP 完全性、近似算法、随机算法与在线算法，含可交互最大流演示。">
+  <meta name="theme-color" content="#f7f4ed">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>研究生专题 · 寻径算法图谱</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="atlas.css">
+  <link rel="stylesheet" href="claude.css">
+</head>
+<body class="lab-page research-page">
+  <div class="ambient" aria-hidden="true"></div>
+
+  <div class="app-shell lab-shell">
+    <header class="topbar lab-topbar">
+      <a class="brand" href="index.html" aria-label="返回算法图谱">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M7.5 23.5 12.8 10.2l6.1 8.2L24.8 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="7.5" cy="23.5" r="3.1" fill="#f7f4ed" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="12.8" cy="10.2" r="2.3" fill="currentColor"/>
+            <circle cx="18.9" cy="18.4" r="2.3" fill="currentColor"/>
+            <circle cx="24.8" cy="6.5" r="3.1" fill="#f7f4ed" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <span class="brand-name">寻径</span>
+          <span class="brand-sub">ALGORITHM ATLAS</span>
+        </span>
+      </a>
+      <div class="topbar-meta lab-topbar-meta">
+        <nav class="lab-breadcrumb" aria-label="面包屑导航">
+          <a href="index.html">算法图谱</a>
+          <span class="crumb-sep">/</span>
+          <strong>研究生专题</strong>
+        </nav>
+        <span class="global-status" data-tone="idle">
+          <span class="status-beacon" aria-hidden="true"></span>
+          <span>研究层 · L4</span>
+        </span>
+      </div>
+    </header>
+
+    <main class="lab-main">
+      <header class="research-hero">
+        <div class="eyebrow-line">
+          <span class="eyebrow">RESEARCH LAYER · L4</span>
+          <span class="eyebrow-separator" aria-hidden="true"></span>
+          <span class="graph-meta">THEORY · ALGORITHMS · FRONTIERS</span>
+        </div>
+        <h1>研究生<em>专题</em></h1>
+        <p>六个反复出现在研究生课程、系统设计与论文阅读中的思想框架：从网络流到线性规划，从 NP 完全性到近似、随机与在线算法。这里不止列结论，也给出模型、定理、证明直觉和可以继续追问的问题。</p>
+        <div class="research-hero-meta">
+          <span>6 个专题</span>
+          <span>模型 → 定理 → 算法</span>
+          <span>可交互最大流</span>
+          <span>博一阅读起点</span>
+        </div>
+      </header>
+
+      <div class="research-layout">
+        <aside class="research-toc" aria-label="专题目录">
+          <div class="research-toc-head">CONTENTS / 目录</div>
+          <a href="#max-flow"><span>01</span>最大流 / 最小割 <em>实验</em></a>
+          <a href="#linear-programming"><span>02</span>线性规划与单纯形</a>
+          <a href="#np-completeness"><span>03</span>NP 完全性与归约</a>
+          <a href="#approximation"><span>04</span>近似算法</a>
+          <a href="#randomized"><span>05</span>随机算法</a>
+          <a href="#online"><span>06</span>在线算法与竞争比</a>
+          <a href="#reading-path"><span>07</span>学习路径与研究入口</a>
+          <p class="research-intro-note">建议按 01 → 02 → 03 → 04 的顺序阅读；随机与在线算法可以独立切入。最大流模块带有可交互实验。</p>
+        </aside>
+
+        <div class="research-sections">
+          <section class="research-topic" id="max-flow">
+            <header class="research-topic-head">
+              <div>
+                <span class="research-topic-kicker">TOPIC 01 · NETWORK FLOW</span>
+                <h2>最大流 / 最小割</h2>
+              </div>
+              <span class="atlas-level-badge level-l4 topic-level">L4</span>
+            </header>
+            <p class="research-topic-lead">一张有向网络、每条边有容量、源点要尽可能多地向汇点输送“流”。最大流问题问的是：在容量与流守恒约束下，最多能送多少？它的对偶答案是最小割。</p>
+
+            <div class="topic-key-grid">
+              <div class="topic-key-card"><span>MODEL</span><strong>流网络</strong><p>有向图、非负容量、源点 s、汇点 t，流量在边上守恒。</p></div>
+              <div class="topic-key-card"><span>ALGORITHM</span><strong>残量网络 + 增广路</strong><p>沿残量容量大于 0 的路径推送流，直到不存在 s→t 路径。</p></div>
+              <div class="topic-key-card"><span>THEOREM</span><strong>max-flow = min-cut</strong><p>最大流值恰好等于把 s 与 t 分开的最小容量割。</p></div>
+            </div>
+
+            <h3>形式化</h3>
+            <p>给定网络 G = (V, E)，容量 c(u,v) ≥ 0。流 f 满足容量约束 0 ≤ f(u,v) ≤ c(u,v)，除 s、t 外每个节点满足流守恒：流入量等于流出量。流的值 |f| 是源点净流出量。一个 s-t 割 (S, T) 满足 s ∈ S、t ∈ T，其容量是所有从 S 指向 T 的边容量之和。</p>
+            <div class="formula">0 ≤ f(u,v) ≤ c(u,v)<br>∑ᵥ f(v,u) = ∑ᵥ f(u,v)   （u ≠ s,t）<br>max |f| = min c(S,T)</div>
+
+            <h3>为什么增广路能工作</h3>
+            <p>残量网络把“已经流过的流”也变成可撤销的容量：若 u→v 流了 x，则残量网络中存在一条 v→u、容量为 x 的反向边。只要还能找到 s→t 的残量路径，就能增加总流；当不存在增广路时，从 s 出发在残量网络中可达的点集 S 与其余点集 T 构成一个割，且该割的每条正向边都已饱和，于是当前流值等于割容量，达到最优。</p>
+            <p>Ford–Fulkerson 给出框架；若每轮只推 1 单位，复杂度 O(E·|f*|)，是伪多项式。Edmonds–Karp 用 BFS 选择最短增广路，复杂度 O(VE²)。Dinic 用分层图与阻塞流把上界改进到 O(V²E)，在单位容量网络上有更好的界。整数容量下每次增广至少推送 1 单位，因此从零流出发得到的最大流也是整数流。</p>
+
+            <h3>可交互：Edmonds–Karp 小网络</h3>
+            <p>下面是一张 6 节点、10 条边的有向容量网络。点击“下一步增广”观察残量路径、瓶颈容量、累计流量；走到最后，右侧会显示最小割容量。</p>
+            <div class="flow-demo" id="maxFlowDemo">
+              <header class="flow-demo-head">
+                <div>
+                  <span class="eyebrow">INTERACTIVE · EDMONDS–KARP</span>
+                  <h3>从增广路到最小割</h3>
+                </div>
+                <div class="flow-demo-total">当前流量 <strong id="flowTotal">0</strong><span>/ <span id="flowLimit">15</span></span></div>
+              </header>
+              <div class="flow-demo-grid">
+                <div>
+                  <div class="flow-canvas" id="flowCanvas" role="img" aria-label="最大流演示网络"></div>
+                  <div class="flow-legend">
+                    <span><i></i>容量边</span>
+                    <span><i class="is-flowing"></i>已有流量</span>
+                    <span><i class="is-augment"></i>本次增广路</span>
+                    <span><i class="is-cut"></i>最小割边</span>
+                  </div>
+                </div>
+                <div class="flow-side">
+                  <p class="flow-message" id="flowMessage">初始状态：所有边流量为 0。点击“下一步增广”开始。</p>
+                  <div class="flow-stats">
+                    <div class="flow-stat"><span>增广次数</span><strong id="flowIteration">0 / 4</strong></div>
+                    <div class="flow-stat"><span>最小割容量</span><strong id="flowCut">—</strong></div>
+                    <div class="flow-stat"><span>残量可达</span><strong id="flowReach">S</strong></div>
+                    <div class="flow-stat"><span>当前步骤</span><strong id="flowStage">init</strong></div>
+                  </div>
+                  <div class="flow-actions">
+                    <button class="button button-primary" id="flowNext" type="button">下一步增广</button>
+                    <button class="button button-quiet" id="flowReset" type="button">重置</button>
+                  </div>
+                  <p class="flow-hint">边标签为 流量 / 容量。最小割边用虚线强调；源点侧可达节点会变成浅绿色。</p>
+                </div>
+              </div>
+            </div>
+
+            <h3>研究视角</h3>
+            <p>最大流是最优化与组合结构的交汇点：它可写成线性规划，其对偶正是最小割；二部图匹配、项目选择、图像分割、网络可靠性都能建模为流。整数容量下 Ford–Fulkerson 会得到整数流，这是全幺模性（total unimodularity）的一个具体体现。</p>
+            <p><strong>常见误区：</strong>“最小割就是随便找一个最小的边集”。割必须把 s 与 t 分开，且容量按方向求和；另一个常见误区是以为 Ford–Fulkerson 一定多项式时间——朴素实现可能极慢，Edmonds–Karp 或 Dinic 才有多项式上界。</p>
+
+            <div class="self-check">
+              <h3>自测</h3>
+              <ol>
+                <li>为什么残量网络要加入反向边？如果删除反向边，最大流会不会算错？</li>
+                <li>给出一个图，使得所有最小割都包含至少三条边，并说明如何从残量可达集读出其中一个。</li>
+                <li>若所有容量都是整数，最大流是否一定存在整数最优解？为什么？</li>
+              </ol>
+            </div>
+            <div class="reading-list">
+              <span>CLRS · 第 26 章</span>
+              <span>Kleinberg &amp; Tardos · 第 7 章</span>
+              <span>Ahuja, Magnanti &amp; Orlin · Network Flows</span>
+            </div>
+          </section>
+
+          <section class="research-topic" id="linear-programming">
+            <header class="research-topic-head">
+              <div>
+                <span class="research-topic-kicker">TOPIC 02 · OPTIMIZATION</span>
+                <h2>线性规划与单纯形</h2>
+              </div>
+              <span class="atlas-level-badge level-l4 topic-level">L4</span>
+            </header>
+            <p class="research-topic-lead">线性规划是在一个凸多面体上优化线性目标。它既是运筹学的语言，也是组合优化、近似算法与机器学习中反复出现的松弛工具。</p>
+
+            <h3>标准形与几何</h3>
+            <p>标准形通常写成：最大化 cᵀx，约束 Ax ≤ b、x ≥ 0。引入松弛变量后可以写成等式。可行域是一个凸多面体；如果最优值有限，至少有一个顶点是最优解。单纯形法沿可行域的边从一个顶点移动到相邻的更好顶点。</p>
+            <div class="formula">maximize    cᵀx<br>subject to  Ax ≤ b<br>            x ≥ 0<br><br>对偶：minimize bᵀy  s.t.  Aᵀy ≥ c, y ≥ 0</div>
+
+            <h3>单纯形与对偶</h3>
+            <p>单纯形维护一个基（basis），把非基变量置零，解出基变量，再根据 reduced cost 判断是否还能改进；若可以，就做一次 pivot。弱对偶告诉我们任意可行原解与对偶解满足 cᵀx ≤ bᵀy；强对偶说，只要两者都可行且最优值有限，它们相等。互补松弛进一步刻画最优解中哪些约束是紧的。</p>
+            <p>单纯形的最坏情况可以是指数级（Klee–Minty 多面体），但实践中通常很快；Bland 规则按最小下标入基/出基，可以排除循环。椭球法与内点法给出了多项式时间保证。线性规划处于 P 中，而整数线性规划是 NP-hard。强对偶也可由 Farkas 引理或分离超平面证明。</p>
+
+            <h3>与算法设计的联系</h3>
+            <ul>
+              <li>最大流可以写成线性规划，最大流最小割定理是 LP 对偶的一个整数特例。</li>
+              <li>顶点覆盖、集合覆盖、设施选址的 LP 松弛给出下界，再通过舍入得到近似算法。</li>
+              <li>原始-对偶算法在近似算法与在线算法中反复出现：对偶变量可以解释为“价格”。</li>
+            </ul>
+            <p><strong>常见误区：</strong>把“线性规划可解”误推成“整数规划也可解”。整数约束会破坏凸性；全幺模矩阵是少数能让 LP 顶点自动取整的结构。</p>
+
+            <div class="self-check">
+              <h3>自测</h3>
+              <ol>
+                <li>写出最大流问题的 LP，并说明其最优值为什么等于最小割。</li>
+                <li>强对偶成立需要哪些条件？如果原问题不可行，对偶可能是什么状态？</li>
+                <li>为什么顶点覆盖的 LP 松弛可能给出非整数解？举一个例子。</li>
+              </ol>
+            </div>
+            <div class="reading-list">
+              <span>Chvátal · Linear Programming</span>
+              <span>Bertsimas &amp; Tsitsiklis · Introduction to Linear Optimization</span>
+              <span>Schrijver · Theory of Linear and Integer Programming</span>
+            </div>
+          </section>
+
+          <section class="research-topic" id="np-completeness">
+            <header class="research-topic-head">
+              <div>
+                <span class="research-topic-kicker">TOPIC 03 · COMPUTATIONAL COMPLEXITY</span>
+                <h2>NP 完全性与归约</h2>
+              </div>
+              <span class="atlas-level-badge level-l4 topic-level">L4</span>
+            </header>
+            <p class="research-topic-lead">NP 完全性不是“没有算法”，而是“目前不知道有多项式算法，且一旦有一个，所有 NP 问题都会有多项式算法”。它的核心工具是多项式时间归约。</p>
+
+            <h3>四个概念</h3>
+            <ul>
+              <li><strong>P：</strong>可以在多项式时间内判定的问题。</li>
+              <li><strong>NP：</strong>给定一个证书，可以在多项式时间内验证解是否正确的问题。</li>
+              <li><strong>NP-hard：</strong>所有 NP 问题都能多项式归约到它；它本身不必在 NP 中。</li>
+              <li><strong>NP-complete：</strong>既在 NP 中，又是 NP-hard。</li>
+            </ul>
+            <div class="formula">L₁ ≤ₚ L₂ ：存在多项式时间 f，使 x ∈ L₁ ⇔ f(x) ∈ L₂</div>
+            <p>归约方向很容易写反：要证明问题 B 是 NP-hard，需要把已知 NP-hard 问题 A 归约到 B，而不是把 B 归约到 A。</p>
+
+            <h3>Cook–Levin 与经典归约链</h3>
+            <p>Cook–Levin 定理证明布尔可满足性 SAT 是 NP-complete：任意非确定性图灵机的计算历史都可以编码成一个布尔公式。随后有一整条经典链：</p>
+            <div class="formula">SAT ≤ₚ 3-SAT ≤ₚ Independent Set ≤ₚ Vertex Cover<br>3-SAT ≤ₚ Hamiltonian Cycle ≤ₚ TSP<br>3-SAT ≤ₚ 3-Coloring　　SAT ≤ₚ Clique</div>
+            <p>这些归约不只是“证明难”，还揭示了问题结构之间的转换：独立集与顶点覆盖在补图意义下等价，TSP 的判定版本从哈密顿回路加入边权后得到。3-SAT 是 NP-complete，但 2-SAT 在 P 中——把每个二元子句写成两条蕴含边，可满足性等价于不存在变量与它的否定处于同一个强连通分量。</p>
+            <p>如果问题带有结构化参数 k，参数化算法可以在 f(k)·poly(n) 的时间内求解。例如顶点覆盖存在 O(2^k·n) 的搜索树算法；这并不与 NP-hard 冲突，因为 k 在输入中可能很小。</p>
+            <p><strong>常见误区：</strong>“NP-hard 就一定不能在现实中求解”。很多 NP-hard 问题在实践中可通过分支限界、SAT 求解器、参数化算法、近似算法或 ILP 求解器处理；“NP-hard”描述的是最坏情况下的多项式时间可解性，而不是所有实例的难度。</p>
+
+            <div class="self-check">
+              <h3>自测</h3>
+              <ol>
+                <li>把 3-SAT 归约到独立集：变量和子句分别对应什么？为什么独立集大小至少为子句数等价于公式可满足？</li>
+                <li>为什么 TSP 的判定版本是 NP-complete，而欧几里得 TSP 仍有 PTAS？</li>
+                <li>如果一个问题是 NP-hard 且也在 NP 中，它是什么？P = NP 会带来什么后果？</li>
+              </ol>
+            </div>
+            <div class="reading-list">
+              <span>CLRS · 第 34 章</span>
+              <span>Garey &amp; Johnson · Computers and Intractability</span>
+              <span>Arora &amp; Barak · Computational Complexity</span>
+            </div>
+          </section>
+
+          <section class="research-topic" id="approximation">
+            <header class="research-topic-head">
+              <div>
+                <span class="research-topic-kicker">TOPIC 04 · NEAR-OPTIMALITY</span>
+                <h2>近似算法</h2>
+              </div>
+              <span class="atlas-level-badge level-l4 topic-level">L4</span>
+            </header>
+            <p class="research-topic-lead">当精确解太难，我们仍希望给出一个可证明“离最优不远”的解。近似算法把 NP-hard 问题变成有性能保证的多项式时间算法。</p>
+
+            <h3>近似比</h3>
+            <p>对最小化问题，算法 A 的近似比为 ρ，若对所有实例都有 cost(A) ≤ ρ · OPT；最大化问题则要求 ALG ≥ OPT / ρ。ρ 越接近 1 越好。PTAS 表示对任意 ε &gt; 0 都能在多项式时间（关于 n）内达到 1 + ε；FPTAS 还要求关于 1/ε 多项式。</p>
+            <div class="formula">LPT：按处理时间降序放置到当前负载最小的机器<br>makespan(LPT) ≤ (4/3 − 1/(3m)) · OPT</div>
+
+            <h3>两个经典结果</h3>
+            <p><strong>多机调度 LPT：</strong>设最后一台完成的机器上最后放的是作业 j，其处理时间为 pⱼ。在放置 j 之前，它被放到了负载最小的机器，所以该机器此前的负载不超过平均负载；结合 pⱼ ≤ OPT，可推出 makespan ≤ (4/3 − 1/(3m)) OPT。这个界是紧的。</p>
+            <p><strong>顶点覆盖 2-近似：</strong>取一个极大匹配 M，把 M 中每条边的两个端点都放入覆盖。任何顶点覆盖至少要包含 M 中每条边的一个端点，因此 |M| ≤ OPT，而算法大小为 2|M|，所以不超过 2·OPT。这个简单算法也说明：近似比常常来自一个清晰的结构下界。</p>
+            <p><strong>集合覆盖贪心：</strong>每步选择覆盖最多未覆盖元素的集合，近似比为调和级数 H_n = 1 + 1/2 + … + 1/n ≤ ln n + 1。若不做任何复杂度假设，这个量级已经接近最优；Feige 的结果表明 (1−ε)ln n 的改进会推出 NP 的准多项式算法。任意顺序的列表调度只能保证 2 − 1/m，按 LPT 排序后才得到约 4/3 的界。</p>
+            <p><strong>不可近似性：</strong>PCP 定理表明许多问题不存在任意接近 1 的多项式近似（除非 P = NP）；一般度量 TSP 没有常数因子近似，而欧氏 TSP 反而有 PTAS。近似算法的边界与问题版本、度量假设和复杂性理论紧密相连。</p>
+            <p><strong>常见误区：</strong>把近似比的方向写反（最小化看 ALG/OPT，最大化看 OPT/ALG）；把 PTAS 当成工程上一定快的算法；或者在未说明“一般图 / 欧氏 / 度量”版本时讨论 TSP 的可近似性。</p>
+
+            <div class="self-check">
+              <h3>自测</h3>
+              <ol>
+                <li>为什么 LPT 的近似比不是简单的 2，而是约 4/3？证明中哪一步用到了“最小负载机器”？</li>
+                <li>顶点覆盖的极大匹配算法为什么是 2-近似？它能改进到 2 − ε 吗？</li>
+                <li>PTAS 与 FPTAS 的区别是什么？请各举一个问题的例子。</li>
+              </ol>
+            </div>
+            <div class="reading-list">
+              <span>Vazirani · Approximation Algorithms</span>
+              <span>Williamson &amp; Shmoys · The Design of Approximation Algorithms</span>
+              <span>Hochbaum · Approximation Algorithms for NP-hard Problems</span>
+            </div>
+          </section>
+
+          <section class="research-topic" id="randomized">
+            <header class="research-topic-head">
+              <div>
+                <span class="research-topic-kicker">TOPIC 05 · RANDOMNESS</span>
+                <h2>随机算法</h2>
+              </div>
+              <span class="atlas-level-badge level-l4 topic-level">L4</span>
+            </header>
+            <p class="research-topic-lead">随机性不是“碰运气”，而是一种可分析的计算资源：它可以让算法更简单、更快，或者让最坏情况不再由对手精确控制。</p>
+
+            <h3>两种正确性</h3>
+            <ul>
+              <li><strong>Las Vegas：</strong>结果总是正确，运行时间或比较次数是随机变量；随机快排是典型例子。</li>
+              <li><strong>Monte Carlo：</strong>运行时间有界，但可能以很小概率出错；通过独立重复可以指数级降低错误概率。</li>
+            </ul>
+            <p>常见的复杂度类包括 RP（单边错误）、BPP（双边有界错误）与 ZPP = RP ∩ coRP（零错误、期望多项式时间）。它们帮助我们把“随机算法有多可靠”说清楚，而不是只凭一次运行的观感。</p>
+            <p>随机快排的期望比较次数不超过 2n ln n + O(n)，仍然是 O(n log n)。把每次 pivot 选择看成随机，递归树每一层期望只做线性工作。Karger 的最小割算法随机收缩边：固定一个最小割，它在一次运行中不被破坏的概率至少是 2/(n(n−1))；独立重复 O(n² log(1/δ)) 次，即可把失败概率降到 δ 以下。更精细地，随机快选只需期望 O(n) 时间，Schwartz–Zippel 引理则用有限域上的随机取值来做多项式恒等测试。</p>
+            <div class="formula">Pr[算法失败] ≤ δ  ⇒  重复 k 次后失败概率 ≤ δᵏ<br>Chernoff：Pr[X ≥ (1+δ)μ] ≤ exp(−δ²μ/3)</div>
+
+            <h3>分析工具箱</h3>
+            <p>期望的线性性、Markov / Chebyshev / Chernoff 界、条件期望与鞅，是随机算法分析的基本工具。随机化也可以用于打破对称性、做负载均衡、设计哈希与抽样。一个自然的问题是：随机性是否可以被消除？条件期望法（method of conditional expectations）与伪随机生成器给出了部分去随机化路径。</p>
+            <p><strong>常见误区：</strong>“随机算法一定比确定性算法快”。随机化通常改善的是期望时间、最坏输入下的稳健性或实现简洁性；它也可能带来额外的失败概率与可重复性问题。</p>
+
+            <div class="self-check">
+              <h3>自测</h3>
+              <ol>
+                <li>随机快排的最坏情况仍然是 O(n²)，为什么我们还说它的期望时间是 O(n log n)？</li>
+                <li>Karger 算法重复多少次才能把失败概率降到 1/n？请用成功概率下界估算。</li>
+                <li>Las Vegas 算法能否通过重复来降低“错误率”？它与 Monte Carlo 的关键区别是什么？</li>
+              </ol>
+            </div>
+            <div class="reading-list">
+              <span>Motwani &amp; Raghavan · Randomized Algorithms</span>
+              <span>Mitzenmacher &amp; Upfal · Probability and Computing</span>
+              <span>Dubhashi &amp; Panconesi · Concentration of Measure</span>
+            </div>
+          </section>
+
+          <section class="research-topic" id="online">
+            <header class="research-topic-head">
+              <div>
+                <span class="research-topic-kicker">TOPIC 06 · UNCERTAINTY</span>
+                <h2>在线算法与竞争比</h2>
+              </div>
+              <span class="atlas-level-badge level-l4 topic-level">L4</span>
+            </header>
+            <p class="research-topic-lead">在线算法在不知道未来输入的情况下必须立刻决策。竞争比衡量它相对于“事后知道全部输入的最优离线算法”能差多少。</p>
+
+            <h3>竞争比</h3>
+            <p>对最小化问题，确定性在线算法 A 的竞争比为 ρ，若对所有输入序列都有 cost(A) ≤ ρ · OPT + O(1)；ρ 越接近 1 越好。随机在线算法通常用期望成本定义竞争比。</p>
+            <div class="formula">Ski Rental：每次租金 1，购买价 B<br>确定性策略：前 B−1 次租，之后购买 ⇒ 竞争比 2 − 1/B<br>随机策略的竞争比：e / (e − 1) ≈ 1.582<br>LRU：k-竞争　随机标记算法：2H_k ≤ 2 ln k + 2</div>
+
+            <h3>经典模型</h3>
+            <p><strong>租雪橇问题：</strong>不知道会滑多少次。租到第 B 次再买，最坏情况下总成本约为最优的 2 倍；随机化策略把竞争比降到 e/(e−1)。</p>
+            <p><strong>分页缓存：</strong>在线决定淘汰哪一页。Belady 最优算法需要未来信息；LRU 与 FIFO 都是 k-竞争，且任何确定性算法都不能优于 k。随机标记算法达到 2H_k，随机化下界为 H_k（Yao 原理）。列表更新中的 move-to-front 规则竞争比为 2，也是确定性最优。</p>
+            <p>在线算法的研究还包括：度量空间中的 k-server、在线匹配、在线集合覆盖、学习增强算法（learning-augmented algorithms）——当预测准确时追求更好的一致性，预测错误时仍保留鲁棒性。随机化在线算法还必须说明对手模型：oblivious adversary 与 adaptive adversary 会给出不同的下界。</p>
+            <p><strong>常见误区：</strong>把竞争比当成平均性能；同一策略在真实分布上可能远好于最坏界。另一个误区是忽略“在线 / 流式”的区别：在线强调决策时序，流式强调空间限制，两者可以叠加但不是同一件事。</p>
+
+            <div class="self-check">
+              <h3>自测</h3>
+              <ol>
+                <li>为什么租雪橇的确定性算法竞争比不能低于 2？构造一个使比值接近 2 的输入。</li>
+                <li>LRU 的竞争比为什么与缓存大小 k 有关？Belady 算法为什么不可能在线实现？</li>
+                <li>“竞争比 2”与“近似比 2”在定义和对抗模型上有什么不同？</li>
+              </ol>
+            </div>
+            <div class="reading-list">
+              <span>Borodin &amp; El-Yaniv · Online Computation and Competitive Analysis</span>
+              <span>Fiat &amp; Woeginger · Online Algorithms</span>
+              <span>Mitzenmacher &amp; Vassilvitskii · Algorithms with Predictions</span>
+            </div>
+          </section>
+
+          <section class="research-topic" id="reading-path">
+            <header class="research-topic-head">
+              <div>
+                <span class="research-topic-kicker">STUDY MAP</span>
+                <h2>学习路径与研究入口</h2>
+              </div>
+              <span class="atlas-level-badge level-l4 topic-level">L4</span>
+            </header>
+            <p class="research-topic-lead">如果要从本科算法课走到博一的研究阅读，可以把这条路径理解为“结构 → 优化 → 难度 → 不确定性”的四层展开。</p>
+            <div class="topic-key-grid">
+              <div class="topic-key-card"><span>先修</span><strong>算法与证明</strong><p>图论、动态规划、复杂度记号、归纳与交换论证。</p></div>
+              <div class="topic-key-card"><span>核心</span><strong>优化与对偶</strong><p>网络流、线性规划、对偶、互补松弛；它们是后续近似与在线算法的共同语言。</p></div>
+              <div class="topic-key-card"><span>研究</span><strong>难度与不确定性</strong><p>NP 完全性、近似下界、随机化、竞争比与学习增强。</p></div>
+            </div>
+            <h3>建议顺序</h3>
+            <ol>
+              <li>先用本页最大流实验建立残量网络与割的直觉，再读 CLRS 第 26 章。</li>
+              <li>学习 LP 标准形、单纯形与对偶；尝试把最大流写成 LP，并解释强对偶。</li>
+              <li>读 Cook–Levin 与 3-SAT 归约链，自己完成一次“独立集 → 顶点覆盖”的归约。</li>
+              <li>用 LPT 与顶点覆盖练习近似比证明，再进入 PTAS 与 PCP。</li>
+              <li>用随机快排与 Karger 掌握概率分析，最后读在线算法与竞争比。</li>
+            </ol>
+            <h3>可以做的小项目</h3>
+            <ul>
+              <li>实现 Dinic，并在随机图上比较它与 Edmonds–Karp 的实际运行时间。</li>
+              <li>用 LP 求解器求一个顶点覆盖松弛，观察分数解与整数最优解的差距。</li>
+              <li>实现随机快排和确定性快排，在对抗输入上比较比较次数分布。</li>
+              <li>为带预测的租雪橇问题设计一个“一致性—鲁棒性”权衡算法。</li>
+            </ul>
+            <h3>关键界速查</h3>
+            <div class="research-table-wrap">
+              <table class="research-table">
+                <thead>
+                  <tr><th>领域</th><th>结论</th><th>代表算法 / 证明工具</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>网络流</td><td>最大流 = 最小割；EK 为 O(VE²)，Dinic 为 O(V²E)</td><td>残量网络、增广路、LP 对偶</td></tr>
+                  <tr><td>线性规划</td><td>强对偶：原问题最优值 = 对偶最优值</td><td>单纯形、Farkas 引理、内点法</td></tr>
+                  <tr><td>复杂性</td><td>3-SAT、Clique、Vertex Cover、TSP 判定均为 NP-complete；2-SAT ∈ P</td><td>Cook–Levin、多项式时间归约、SCC</td></tr>
+                  <tr><td>近似</td><td>LPT ≤ (4/3 − 1/(3m))·OPT；顶点覆盖 2-近似；集合覆盖 Hₙ</td><td>贪心、匹配下界、LP 舍入</td></tr>
+                  <tr><td>随机</td><td>随机快排期望 ≤ 2n ln n + O(n)；Karger 单次成功 ≥ 2/(n(n−1))</td><td>期望线性性、收缩、Chernoff 界</td></tr>
+                  <tr><td>在线</td><td>Ski rental 确定性 2−1/B、随机 e/(e−1)；LRU 为 k-竞争</td><td>竞争比、Yao 原理、势能分析</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="reading-list">
+              <span>CLRS</span>
+              <span>Kleinberg &amp; Tardos</span>
+              <span>Arora &amp; Barak</span>
+              <span>Williamson &amp; Shmoys</span>
+              <span>Mitzenmacher &amp; Upfal</span>
+              <span>Borodin &amp; El-Yaniv</span>
+            </div>
+          </section>
+
+          <div class="research-closing">
+            <h2>从“会做”到“会问”。</h2>
+            <p>研究生阶段的核心能力不是记住更多算法，而是能判断一个问题属于哪一层难度、该用哪种松弛、证明的瓶颈在哪里，以及什么时候一个负结果比一个算法更有价值。回到图谱，把这些框架和可运行实验放在一起看。</p>
+            <div class="topic-links">
+              <a href="index.html">← 返回算法图谱</a>
+              <a href="advanced-lab.html#pagerank">PageRank 幂迭代</a>
+              <a href="scheduling-lab.html#lpt">多机 LPT 近似</a>
+              <a href="graph-lab.html">图算法实验台</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="page-footer atlas-footer">
+      <span>RESEARCH LAYER / ALGORITHM ATLAS</span>
+      <span class="footer-dot" aria-hidden="true"></span>
+      <span>模型、定理、证明直觉与开放问题。</span>
+      <span class="atlas-footer-note">为本科高年级与博一阅读设计</span>
+    </footer>
+  </div>
+
+  <script src="engines/flow-engine.js"></script>
+  <script src="research.js"></script>
+</body>
+</html>
